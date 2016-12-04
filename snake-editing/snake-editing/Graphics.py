@@ -2,12 +2,14 @@
 
 import turtle
 
+# variables defined in other functions
+screenWidth = 400
+screenHeight = 500
 
 def init():
     ''' All the initialization of this game. Run only once.
     '''
-    screenWidth = 500
-    screenHeight = 500
+    
     
     global wn
     global snake
@@ -29,10 +31,12 @@ init()
 
 snake.color("green")
 snake.pensize(4)
-wn.register_shape("C:\Maple.gif")
-snake.shape("C:\Maple.gif")
-for i in range(4):
-    snake.forward(500)
+wn.register_shape("C:\Joseph\Maple_small.gif")
+snake.shape("C:\Joseph\Maple_small.gif")
+for i in range(2):
+    snake.forward(screenWidth-20)
+    snake.left(90)
+    snake.forward(screenHeight-20)
     snake.left(90)
 
 wn.mainloop()
