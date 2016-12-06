@@ -22,11 +22,11 @@ def init():
     global snake
     global misc
     wn = turtle.Screen()
-    #wn.screensize(screenWidth,screenHeight,bg="white")
     wn.setup(screenWidth, screenHeight)
-    wn.setworldcoordinates(0, 0, screenWidth, screenHeight)
-    snake = turtle.Turtle() #draws the snake
-    misc = turtle.Turtle() #draws miscellaneous stuff: borders, scores, etc
+    #wn.screensize(screenWidth,screenHeight,bg="white")
+    wn.setworldcoordinates(0, 0, screenWidth, screenHeight) #(0,0) is bottom left of screen
+    snake = turtle.Turtle() #will draw the snake
+    misc = turtle.Turtle() #will draw miscellaneous stuff: borders, scores, etc
     
     
     #drawBackground
