@@ -50,6 +50,9 @@ for x in range(xSquares):
         snake.stamp()
 print(grid)
 
+#Needs testing, but below is code for the initial postion of the snake (center of screen)
+#snakePos = [grid[len(grid)//2 +1][len(grid[0])//2],grid[len(grid)//2][len(grid[0])//2],grid[len(grid)//2 -1][len(grid[0])//2]]
+
 
 '''
 snake.color("green")
