@@ -3,10 +3,13 @@
 import turtle
 
 # variables defined in other functions
-screenWidth = 500
-screenHeight = 500
-xSquares = 10 # number of horizontal virtual squares
-ySquares = 10 # number of vertical virtual squares
+#Variables potentially set by user
+screenWidth = 500 #integer, in pixels
+screenHeight = 500 #integer, in pixels
+xSquares = 10 #integer, number of horizontal virtual squares (determines the size of the board)
+ySquares = 10 #integer, number of vertical virtual squares (determines the size of the board)
+
+#Things done by the program
 squareWidth = screenWidth/xSquares
 squareHeight = screenHeight/ySquares
 # Make space in the grid list
@@ -14,27 +17,38 @@ grid = [] # contains the actual coordinates of each square
 
 
 def initGraphics():
-    ''' All the initialization of this game. Run only once.
-        Note: currently all graphics. Rename function if it stays this way?'''
-    
+    '''Initializes graphics for the game. Run only once.
+        '''
+    #Set up the screen object
     wn = turtle.Screen()
-    #wn.screensize(screenWidth,screenHeight,bg="white")
     wn.setup(screenWidth, screenHeight)
-    wn.setworldcoordinates(0, 0, screenWidth, screenHeight)
-    snake = turtle.Turtle() #draws the snake
-    misc = turtle.Turtle() #draws miscellaneous stuff: borders, scores, etc
-    
+    #Bottom left corner (0,screenHeight), top right corner (screenWidth,0)
+    #to make javascript-like coordinate system with (0,0) in the top left corner
+    wn.setworldcoordinates(0, screenHeight, screenWidth, 0)
+    wn.tracer(0, delay=1) #Turn turtle animation off (only each 0th screen update is performed)
+    wn.title("Game ???") #Include current score in title?
+
+    #Set up the turtle objects
+    snake = turtle.Turtle() #will draw the snake
+    snake.speed(0)
+    snake.penup() #This should be the default state of the turtle
+
+    misc = turtle.Turtle() #will draw miscellaneous stuff: borders, scores, etc
+    misc.speed(0)
+    misc.penup() #This should be the default state of the turtle
     
     #drawBackground
     #misc.setposition(?)
+
+    """Note to Joseph: see below. Pls delete this comment when you've seen this"""
+    wn.update() #Use this method to display the updated screen
 
     return wn, snake, misc # returns window & two turtles
 
 # runs initGraphics() and creates global variables wn, snake, and misc
 wn, snake, misc = initGraphics() 
 
-snake.penup()
-snake.speed(0)
+
 #wn.register_shape("C:\Joseph\Maple_small.gif")
 #snake.shape("C:\Joseph\Maple_small.gif")
 wn.register_shape("Maple_small.gif")
