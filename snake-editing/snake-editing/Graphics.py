@@ -1,4 +1,4 @@
-# Copied from Initialization 12/4/2016 9:12PM
+# Up to date: 1/02/2018
 
 import turtle
 
