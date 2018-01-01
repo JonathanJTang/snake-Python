@@ -13,7 +13,7 @@ squareHeight = screenHeight/ySquares
 grid = [] # contains the actual coordinates of each square
 
 
-def init():
+def initGraphics():
     ''' All the initialization of this game. Run only once.
         Note: currently all graphics. Rename function if it stays this way?'''
     
@@ -28,10 +28,10 @@ def init():
     #drawBackground
     #misc.setposition(?)
 
-    #return wn, snake, misc
+    return wn, snake, misc # returns window & two turtles
 
-
-init()
+# runs initGraphics() and creates global variables wn, snake, and misc
+wn, snake, misc = initGraphics() 
 
 snake.penup()
 snake.speed(0)
