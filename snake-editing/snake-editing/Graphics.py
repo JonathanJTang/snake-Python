@@ -15,12 +15,8 @@ grid = [] # contains the actual coordinates of each square
 
 def init():
     ''' All the initialization of this game. Run only once.
-    '''
+        Note: currently all graphics. Rename function if it stays this way?'''
     
-    
-    global wn
-    global snake
-    global misc
     wn = turtle.Screen()
     #wn.screensize(screenWidth,screenHeight,bg="white")
     wn.setup(screenWidth, screenHeight)
@@ -65,4 +61,5 @@ for i in range(2):
     snake.forward(screenHeight-20)
     snake.left(90)
 '''
-wn.mainloop()
+
+wn.mainloop() #We need to figure out where this line should go in the overall project
