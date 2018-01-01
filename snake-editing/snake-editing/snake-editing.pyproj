@@ -33,7 +33,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Main.py" />
-    <Compile Include="module1.py" />
     <Compile Include="Graphics.py">
       <SubType>Code</SubType>
     </Compile>

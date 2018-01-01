@@ -1,6 +1,6 @@
 '''
 Project Name:
-Authors:
+Authors: Jonathan Tang & Joseph Tang
 Created on:
 
 Edited 
@@ -8,27 +8,32 @@ Edited
 import turtle
 import time
 
-#Initialize variables
-isDead = False
-count = 0
-previousTime = time.perf_counter()
-gameSpeed = 1
-loopInterval = 1/gameSpeed
 
-#Main game loop
-while(isDead != True):
-    currentTime = time.perf_counter()
-    while(currentTime - previousTime >= loopInterval):
-        #print(currentTime - previousTime)
-        #out1=currentTime - previousTime
-        #out2=count
+def gameMain():
+    #Initialize variables
+    isDead = False
+    count = 0
+    previousTime = time.perf_counter()
+    gameSpeed = 1
+    loopInterval = 1/gameSpeed
 
-        previousTime = currentTime #start countdown from beginning of loop
+    #Main game loop
+    while(isDead != True):
+        currentTime = time.perf_counter()
+        while(currentTime - previousTime >= loopInterval):
+            #print(currentTime - previousTime)
+            #out1=currentTime - previousTime
+            #out2=count
+
+            previousTime = currentTime #start countdown from beginning of loop
         
-        #[Insert Code]
+            #[Insert Code]
         
-        #count = 0
-        #previousTime = currentTime #start countdown from end of loop
-    #count += 1
+            #count = 0
+            #previousTime = currentTime #start countdown from end of loop
+        #count += 1
 
-#Game over code
+    #Game over code
+
+if __name__ == "__main__":
+    gameMain()
