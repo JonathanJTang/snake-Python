@@ -13,11 +13,11 @@ def gameMain():
     #Initialize variables
     isDead = False
     count = 0
-    previousTime = time.perf_counter()
     gameSpeed = 1
-    loopInterval = 1/gameSpeed
+    loopInterval = 1/gameSpeed #Maybe too fast?
 
     #Main game loop
+    previousTime = time.perf_counter()
     while(isDead != True):
         currentTime = time.perf_counter()
         while(currentTime - previousTime >= loopInterval):
