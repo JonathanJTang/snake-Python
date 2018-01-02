@@ -45,7 +45,9 @@ class Snake:
     def __init__(self,xSquares,ySquares,snakeDrawer,miscDrawer,grid,obstaclePositionTuples=[]):
         #grid as parameter is temporary
         """Initialize variables for a Snake instance.
-            snakeDrawer and miscDrawer are turtle.Turtle() objects"""
+            snakeDrawer and miscDrawer are turtle.Turtle() objects.
+            Some initial values need to be tweaked, or added in
+            game difficulty modes/settings"""
         #TEMP
         self.grid = grid
         #
@@ -79,7 +81,7 @@ class Snake:
             should each game loop a "turn" or something else?
             Also, should the display be called the "screen", the "board", or something else?"""
         self.turnsSinceLastBonus = 0
-        self.bonusMaxFreq = 4 #i.e. x turns minimum between bonuses
+        self.bonusMaxFreq = 2 #i.e. x turns minimum between bonuses
         self.bonusObjOnScreen = None
 
         self.obstaclePositionTuples = obstaclePositionTuples
@@ -158,7 +160,8 @@ class Snake:
         self.turnsSinceLastBonus += 1
         if self.bonusObjOnScreen is None: #Only spawn a new bonus item if there isn't already one on the board
             #The variable below could be changed
-            bonusSpawnThreshold = 0.7
+            bonusSpawnThreshold = 0
+            #bonusSpawnThreshold = 0.7
             if self.turnsSinceLastBonus > self.bonusMaxFreq:
                 randNumGenerator = random.Random()
                 if randNumGenerator.random() > 0.7: #random decimal number in range [0.0,1.0)

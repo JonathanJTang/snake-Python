@@ -46,6 +46,7 @@ def initGraphics():
     snakeDrawer.shape("circle")
     snakeDrawer.fillcolor(255,255,255)
     snakeDrawer.turtlesize(2,2)
+    miscDrawer.shape("Maple_small.gif")
     ### temp ###
 
     """Note to Joseph: see below. Pls delete this comment when you've seen this"""
@@ -81,9 +82,36 @@ from ClassSnake import *
 playerOneSnake = Snake(xSquares,ySquares,snakeDrawer,miscDrawer,grid) #grid as parameter is temporary
 wn.update()
 isDead = False
+lastHeadDirection = "left"
+import random
+import time
+rng = random.Random()
+d = {1: "left",2:"right",3:"up",4:"down"}
+
+def opp(headDirection):
+    if headDirection == "left":
+        return "right"
+    elif headDirection == "right":
+        return "left"
+    elif headDirection == "up":
+        return "down"
+    elif headDirection == "down":
+        return "up"
+
 while isDead != True:
-    isDead = playerOneSnake.processFrame("down")
+    #Note for key press listening function: headDirection can't be the direct opposite
+    #of the last headDirection, eg if initial default headDirection was "left",
+    #key presses of "right" will be ignored
+    #Also, only the "first" key press per "turn" will be recorded?
+    
+    while True:
+        currentHeadDirection = d[rng.randint(1,4)]
+        if currentHeadDirection != opp(lastHeadDirection):
+            break;
+    isDead = playerOneSnake.processFrame(currentHeadDirection)
     wn.update()
+    lastHeadDirection = currentHeadDirection
+    time.sleep(1)
 ### ###
 
 '''
