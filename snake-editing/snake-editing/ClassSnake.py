@@ -110,13 +110,6 @@ class Snake:
             newHeadY = lastHeadY+1 #Coordinate system of display has downwards y-direction as positive
         self.posList.append((newHeadX,newHeadY))
 
-        #Remove tail unit of snake, if necessary
-        if len(self.posList) > self.properLength:
-            #Because of how the game loop is set up, the snake can only be
-            #at most 1 unit over its proper length
-            self.posList.pop(0) #remove the tail unit of the snake
-            self.snakeDrawer.clearstamp(self.stampIDList.pop(0))
-
         #Determine if the snake has run into anything that would kill it
         if self.isCollision(self.posList[len(self.posList)-1]):
             #Special graphics, e.g. stunned/dead snake head???
@@ -126,10 +119,20 @@ class Snake:
             stampID = self.snakeDrawer.stamp()
             self.stampIDList.append(stampID)
 
+        #Remove tail unit of snake, if necessary
+        if len(self.posList) > self.properLength:
+            #Because of how the game loop is set up, the snake can only be
+            #at most 1 unit over its proper length
+            self.posList.pop(0) #remove the tail unit of the snake
+            self.snakeDrawer.clearstamp(self.stampIDList.pop(0))
+
     def isCollision(self,headPosTuple):
         headX, headY = headPosTuple
         if headX < 0 or headY < 0 or headX > self.xLimit or headY > self.yLimit:
             #The snake ran into the borders
+            return True
+        elif headPosTuple in self.posList[0:len(self.posList)-1]: #a slice from 0 to just before headPosTuple
+            #The snake ran into itself
             return True
         elif headPosTuple in self.obstaclePositionTuples:
             #The snake ran into an obstacle

@@ -11,8 +11,8 @@ gridSquareSideLength = 40 #must be an integer that is a factor of both screenWid
 #Things done by the program
 if screenHeight % gridSquareSideLength != 0 or screenWidth % gridSquareSideLength != 0:
     raise ValueError("gridSquareSideLength must divide both screenHeight and screenWidth")
-xSquares = screenHeight//gridSquareSideLength #number of virtual squares in a row
-ySquares = screenWidth//gridSquareSideLength #number of virtual squares in a column
+xSquares = screenWidth//gridSquareSideLength #number of virtual squares in a row
+ySquares = screenHeight//gridSquareSideLength #number of virtual squares in a column
 
 if not (xSquares >= 3 and ySquares >= 3):
     raise ValueError
@@ -76,7 +76,7 @@ for y in range(ySquares):
         grid[y].append((gridSquareSideLength//2 + gridSquareSideLength*x, gridSquareSideLength//2 + gridSquareSideLength*y))
         #snakeDrawer.setposition(grid[x][y])
         #snakeDrawer.stamp()
-for i in range(xSquares): #For debugging
+for i in range(ySquares): #For debugging
     print(grid[i])
 
 #Needs testing, but below is code for the initial postion of the snake (center of screen)
