@@ -40,7 +40,12 @@ def initGraphics():
     miscDrawer.penup() #This should be the default state of the turtle
     miscDrawer.hideturtle() #This should be the default state of the turtle
     
-    scorePrinter = turtle.Turtle() # will print score on screen
+    textPrinter = turtle.Turtle() # will print text on screen when needed
+    textPrinter.speed(0)
+    textPrinter.penup() #This should be the default state of the turtle
+    textPrinter.hideturtle() #This should be the default state of the turtle
+
+    scorePrinter = turtle.Turtle() # will print the score on the screen
     scorePrinter.speed(0)
     scorePrinter.penup() #This should be the default state of the turtle
     scorePrinter.hideturtle() #This should be the default state of the turtle
@@ -73,10 +78,10 @@ def initGraphics():
     """Note to Joseph: see below. Pls delete this comment when you've seen this"""
     wn.update() #Use this method to display the updated screen after drawing with turtle
 
-    return wn, snakeDrawer, miscDrawer, scorePrinter # returns window & two turtles
+    return wn, snakeDrawer, miscDrawer, textPrinter, scorePrinter # returns window & two turtles
 
 # runs initGraphics() and creates global variables wn, snakeDrawer, and miscDrawer
-wn, snakeDrawer, miscDrawer, scorePrinter = initGraphics()
+wn, snakeDrawer, miscDrawer, textPrinter, scorePrinter = initGraphics()
 
 
 # Build grid, which matches coordinates in the virtual grid with turtle coordinates used to display objects

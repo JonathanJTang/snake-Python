@@ -66,14 +66,8 @@ class Snake:
         self.stampIDList = [] #List of stampIDs for the snake; used for turtle to display the snake on screen
         
         ''' disabled user-set initialPointTuple functionality '''
-
+                
         self.properLength = 5 #initial length of snake
-        for i in range(-2,-2+self.properLength):
-            self.posList.append((xSquares//2-i,ySquares//2))
-            self.snakeDrawer.setpos(self.grid[ySquares//2][xSquares//2-i])
-            stampID = self.snakeDrawer.stamp()
-            self.stampIDList.append(stampID)
-
         ''' disabled user-set self.length functionality
         #self.properLength = initialLength #The length of the snake, in number of units on the virtual grid
         '''
@@ -91,6 +85,14 @@ class Snake:
         #Snake object need to know the game speed? It would
         #potentially affect the game score
 
+        #Set up initial graphics for the snake object
+        for i in range(-2,-2+self.properLength):
+            self.posList.append((xSquares//2-i,ySquares//2))
+            self.snakeDrawer.setpos(self.grid[ySquares//2][xSquares//2-i])
+            stampID = self.snakeDrawer.stamp()
+            self.stampIDList.append(stampID)
+        self.scorePrinter.setpos(300, 50) # where the center of the text is
+        self.scorePrinter.write("Score: " + str(self.currentScore), True, align="center", font=("Arial", 32, "bold"))
         
 
     def moveSnake(self,newHeadDirection):
@@ -159,9 +161,10 @@ class Snake:
                     self.length += snakeLengthChange
                     self.bonusObjOnScreen = None
 
-        #Display updated score        
+        #Display updated score
+        self.scorePrinter.undo()        
         self.scorePrinter.setpos(300, 50) # where the center of the text is
-        self.scorePrinter.clear()
+        #self.scorePrinter.clear() No longer needed with manual wn.update()
         self.scorePrinter.write("Score: " + str(self.currentScore), True, align="center", font=("Arial", 32, "bold"))
 
 

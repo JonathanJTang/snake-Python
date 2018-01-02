@@ -14,14 +14,25 @@ def pauseGameHandler():
     """Called whenever the key for pause game is pressed"""
     print("space key pressed") #For debugging
     global pauseGame
+    global textPrinter
     if pauseGame == True:
         pauseGame = False
+        #unPauseGameGraphics
+        textPrinter.undo() #Remove "game paused" message
+        textPrinter.setpos(300, 200) # where the center of the text is
+        for num in range(3,0,-1):
+            textPrinter.write("{0}".format(num), True, align="center", font=("Arial", 48, "bold"))
+            time.sleep(1)
+            textPrinter.undo()
+        
     else:
         pauseGame = True
+        #pauseGameGraphics
+        textPrinter.setpos(300, 200) # where the center of the text is
+        textPrinter.write("GAME PAUSED", True, align="center", font=("Arial", 48, "bold"))
 
-def gameMain():
+if __name__ == "__main__":
     #Initialize variables
-    global pauseGame
     isDead = False
     count = 0
     gameSpeed = 1
@@ -52,7 +63,7 @@ def gameMain():
         print(grid[i])
 
     from Graphics import initGraphics
-    wn, snakeDrawer, miscDrawer, scorePrinter = initGraphics()
+    wn, snakeDrawer, miscDrawer, textPrinter, scorePrinter = initGraphics()
     """Copied from Graphics.py 1/03/2018"""
 
     playerOneSnake = Snake(xSquares,ySquares,snakeDrawer,miscDrawer, scorePrinter, grid) #grid as parameter is temporary
@@ -72,13 +83,14 @@ def gameMain():
     previousTime = time.perf_counter()
     while(isDead != True):
         currentTime = time.perf_counter()
+        wn.update() #apparently needed to listen to key presses
         while(currentTime - previousTime >= loopInterval and pauseGame == False):
             #print(currentTime - previousTime)
             #out1=currentTime - previousTime
             previousTime = currentTime #start countdown from beginning of loop
         
             print("game loop {0}".format(count))
-            wn.update()
+            wn.update() #apparently needed to listen to key presses
             isDead = playerOneSnake.processFrame()
             wn.update()
             count += 1
@@ -90,6 +102,3 @@ def gameMain():
     miscDrawer.write("GAME OVER", True, align="center", font=("Arial", 48, "bold"))
     print("Your Snake is Dead! :(") # gameover message
     wn.mainloop() #Put this line here???
-
-if __name__ == "__main__":
-    gameMain()
