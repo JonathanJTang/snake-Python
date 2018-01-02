@@ -4,18 +4,16 @@ import turtle
 
 # variables defined in other functions
 #Variables potentially set by user
-screenWidth = 600 #integer, in pixels
-screenHeight = 400 #integer, in pixels
-gridSquareSideLength = 40 #must be an integer that is a factor of both screenWidth and screenHeight
+xSquares = 15 #number of virtual squares in a row
+ySquares = 10 #number of virtual squares in a column
+gridSquareSideLength = 40 #in pixels; must be an integer
 
 #Things done by the program
-if screenHeight % gridSquareSideLength != 0 or screenWidth % gridSquareSideLength != 0:
-    raise ValueError("gridSquareSideLength must divide both screenHeight and screenWidth")
-xSquares = screenWidth//gridSquareSideLength #number of virtual squares in a row
-ySquares = screenHeight//gridSquareSideLength #number of virtual squares in a column
-
 if not (xSquares >= 3 and ySquares >= 3):
-    raise ValueError
+    raise ValueError("xSquares and ySquares must both be greater than 3")
+
+screenWidth = xSquares * gridSquareSideLength #integer, in pixels
+screenHeight = ySquares * gridSquareSideLength #integer, in pixels
 
 
 def initGraphics():
