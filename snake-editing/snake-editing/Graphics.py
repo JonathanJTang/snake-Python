@@ -95,7 +95,7 @@ drawWalls()
 
 ### Jonathan's Testing
 from ClassSnake import *
-playerOneSnake = Snake(xSquares,ySquares,snakeDrawer,miscDrawer,grid,"""ADD HERE""") #grid as parameter is temporary
+playerOneSnake = Snake(xSquares,ySquares,snakeDrawer,miscDrawer,grid) #grid as parameter is temporary
 wn.update()
 isDead = False
 lastHeadDirection = "left"
