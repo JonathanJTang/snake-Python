@@ -58,6 +58,7 @@ class Snake:
         self.scorePrinter = scorePrinter
 
         self.headDirection = "left"
+        self.headDirectionSet = False
         self.xLimit = xSquares - 1
         self.yLimit = ySquares - 1
         
@@ -67,7 +68,7 @@ class Snake:
         ''' disabled user-set initialPointTuple functionality '''
 
         self.properLength = 5 #initial length of snake
-        for i in range(self.properLength):
+        for i in range(-2,-2+self.properLength):
             self.posList.append((xSquares//2-i,ySquares//2))
             self.snakeDrawer.setpos(self.grid[ySquares//2][xSquares//2-i])
             stampID = self.snakeDrawer.stamp()
@@ -95,6 +96,7 @@ class Snake:
     def moveSnake(self,newHeadDirection):
         """Handle both internal variables and screen display to move
             the snake one unit"""
+        print("newHeadDirection is", newHeadDirection)
         #Add new head unit of snake
         lastHeadX, lastHeadY = self.posList[len(self.posList)-1]
         if newHeadDirection == "left":
@@ -114,7 +116,7 @@ class Snake:
         #Determine if the snake has run into anything that would kill it
         if self.isCollision(self.posList[len(self.posList)-1]):
             #Special graphics, e.g. stunned/dead snake head???
-            return -1
+            return True #isDead = True
         else:
             self.snakeDrawer.setpos(self.grid[newHeadY][newHeadX])
             stampID = self.snakeDrawer.stamp()
@@ -185,15 +187,45 @@ class Snake:
                             break; #only break if (x,y) is not a space the snake is on
                     self.bonusObjOnScreen = BonusObj("apple",(x,y),10,10,2) #parameters need to be confirmed
                     self.turnsSinceLastBonus = 0
+    
+    def upKeyHandler(self):
+        """Will be called whenever key 'up' is pressed"""
+        print("up key pressed") #For debugging
+        if self.headDirectionSet is False: #Only the first valid key press will be accepted
+            if self.headDirection != "down": #last headDirection cannot be "down"
+                self.headDirection = "up" #Set new headDirection
+                self.headDirectionSet = True
 
+    def downKeyHandler(self):
+        """Will be called whenever key 'down' is pressed"""
+        print("down key pressed") #For debugging
+        if self.headDirectionSet is False: #Only the first valid key press will be accepted
+            if self.headDirection != "up": #last headDirection cannot be "up"
+                self.headDirection = "down" #Set new headDirection
+                self.headDirectionSet = True
 
-    def processFrame(self,snakeHeadDirection):
+    def leftKeyHandler(self):
+        """Will be called whenever key 'left' is pressed"""
+        print("left key pressed") #For debugging
+        if self.headDirectionSet is False: #Only the first valid key press will be accepted
+            if self.headDirection != "right": #last headDirection cannot be "right"
+                self.headDirection = "left" #Set new headDirection
+                self.headDirectionSet = True
+
+    def rightKeyHandler(self):
+        """Will be called whenever key 'right' is pressed"""
+        print("right key pressed") #For debugging
+        if self.headDirectionSet is False: #Only the first valid key press will be accepted
+            if self.headDirection != "left": #last headDirection cannot be "left"
+                self.headDirection = "right" #Set new headDirection
+                self.headDirectionSet = True
+
+    def processFrame(self):
         """The main game loop should call this method once each loop.
-            Given the snake head's current heading, the method updates
-            internal variables and the screen display"""
-        #For now, we'll put keyboard listening code outside the class.
-        #It could potentially be moved inside here though"""
-        if self.moveSnake(snakeHeadDirection) == -1:            
+            This method updates internal variables and the screen display"""
+        isDead = self.moveSnake(self.headDirection)
+        self.headDirectionSet = False
+        if isDead == True:            
             return True #ie isDead = True
         self.updateScore()
         #self.determineBonusSpawn()

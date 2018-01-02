@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>3508f16e-74ee-409e-a3ef-575a091cc8f5</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>Graphics.py</StartupFile>
+    <StartupFile>Main.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>

@@ -15,7 +15,6 @@ if not (xSquares >= 3 and ySquares >= 3):
 screenWidth = xSquares * gridSquareSideLength #integer, in pixels
 screenHeight = ySquares * gridSquareSideLength #integer, in pixels
 
-
 def initGraphics():
     '''Initializes graphics for the game. Run only once.
         '''
@@ -25,8 +24,8 @@ def initGraphics():
     #Bottom left corner (0,screenHeight), top right corner (screenWidth,0)
     #to make javascript-like coordinate system with (0,0) in the top left corner
     wn.setworldcoordinates(0, screenHeight, screenWidth, 0)
-    """temporarily commented for easier debugging"""
-    #wn.tracer(0, delay=1) #Turn turtle animation off (only each 0th screen update is performed)
+    #"""temporarily commented for easier debugging"""
+    wn.tracer(0, delay=1) #Turn turtle animation off (only each 0th screen update is performed)
     wn.title("Game ???") #Include current score in title?
     wn.colormode(255)
 
@@ -60,6 +59,17 @@ def initGraphics():
     #miscDrawer.shape("Maple_small.gif")
     ### temp ###
 
+    #draw walls
+    miscDrawer.pensize(3)
+    miscDrawer.setpos(0, 0)#top-left corner again
+    miscDrawer.pendown()
+    miscDrawer.setpos(0, gridSquareSideLength*ySquares) #bottom-left corner
+    miscDrawer.setpos(gridSquareSideLength*xSquares, gridSquareSideLength*ySquares) #bottom-right corner
+    miscDrawer.setpos(gridSquareSideLength*xSquares, 0) #top-right corner
+    miscDrawer.setpos(0, 0)#top-left corner again
+    miscDrawer.penup()
+    miscDrawer.pensize(1)
+
     """Note to Joseph: see below. Pls delete this comment when you've seen this"""
     wn.update() #Use this method to display the updated screen after drawing with turtle
 
@@ -69,35 +79,18 @@ def initGraphics():
 wn, snakeDrawer, miscDrawer, scorePrinter = initGraphics()
 
 
-
-# Make space in the grid list
-grid = [] # contains the coordinates of each square used in turtle to display objects
-# set coordinates
-for y in range(ySquares):
+# Build grid, which matches coordinates in the virtual grid with turtle coordinates used to display objects
+grid = []
+for y in range(ySquares): #traverse rows
     grid.append([])    
-    for x in range(xSquares):
+    for x in range(xSquares): #traverse columns
         grid[y].append((gridSquareSideLength//2 + gridSquareSideLength*x, gridSquareSideLength//2 + gridSquareSideLength*y))
-        #snakeDrawer.setposition(grid[x][y])
-        #snakeDrawer.stamp()
+
 for i in range(ySquares): #For debugging
     print(grid[i])
 
-def drawWalls():
-    #draws walls
-    miscDrawer.setpos(0, 0)#top-left corner again
-    miscDrawer.pendown()
-    miscDrawer.setpos(0, gridSquareSideLength*ySquares) #bottom-left corner
-    miscDrawer.setpos(gridSquareSideLength*xSquares, gridSquareSideLength*ySquares) #bottom-right corner
-    miscDrawer.setpos(gridSquareSideLength*xSquares, 0) #top-right corner
-    miscDrawer.setpos(0, 0)#top-left corner again
-    miscDrawer.penup()
 
-drawWalls()
-
-#Needs testing, but below is code for the initial postion of the snake (center of screen)
-#snakePos = [grid[len(grid)//2 +1][len(grid[0])//2],grid[len(grid)//2][len(grid[0])//2],grid[len(grid)//2 -1][len(grid[0])//2]]
-
-
+'''
 ### Jonathan's Testing
 from ClassSnake import *
 playerOneSnake = Snake(xSquares,ySquares,snakeDrawer,miscDrawer, scorePrinter, grid) #grid as parameter is temporary
@@ -119,19 +112,14 @@ def opp(headDirection):
     elif headDirection == "down":
         return "up"
 
-while isDead != True:
-    #Note for key press listening function: headDirection can't be the direct opposite
-    #of the last headDirection, eg if initial default headDirection was "left",
-    #key presses of "right" will be ignored
-    #Also, only the "first" key press per "turn" will be recorded?
-    
+while isDead != True:  
     while True:
-        currentHeadDirection = d[rng.randint(1,4)]
-        if currentHeadDirection != opp(lastHeadDirection):
+        newHeadDirection = d[rng.randint(1,4)]
+        if newHeadDirection != opp(lastHeadDirection):
             break;
-    isDead = playerOneSnake.processFrame(currentHeadDirection)
+    isDead = playerOneSnake.processFrame(newHeadDirection)
     wn.update()
-    lastHeadDirection = currentHeadDirection
+    lastHeadDirection = newHeadDirection
     time.sleep(1)
 
 #GAMEOVER message
@@ -139,17 +127,6 @@ miscDrawer.setpos(300, 200) # where the center of the text is
 miscDrawer.write("GAME OVER", True, align="center", font=("Arial", 48, "bold"))
 print("Your Snake is Dead! :(") # gameover message
 ### ###
-
-'''
-snakeDrawer.color("green")
-snakeDrawer.pensize(4)
-wn.register_shape("C:\Joseph\Maple_small.gif")
-snakeDrawer.shape("C:\Joseph\Maple_small.gif")
-for i in range(2):
-    snakeDrawer.forward(screenWidth-20)
-    snakeDrawer.left(90)
-    snakeDrawer.forward(screenHeight-20)
-    snakeDrawer.left(90)
 '''
 
-wn.mainloop() #We need to figure out where this line should go in the overall project
+#wn.mainloop() #We need to figure out where this line should go in the overall project
