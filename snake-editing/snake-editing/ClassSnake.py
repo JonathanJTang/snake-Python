@@ -35,6 +35,7 @@ class BonusObj:
         return None,None
 
     def destroy(self):
+        """Removes BonusObj from screen, processes points change"""
         turtleObj.clearstamp(self.stampID)
         if self.earned == True:
             return self.pointsValue, self.snakeLengthChange
@@ -118,7 +119,7 @@ class Snake:
         #Determine if the snake has run into anything that would kill it
         if self.isCollision(self.posList[len(self.posList)-1]):
             #Special graphics, e.g. stunned/dead snake head???
-            return True #isDead = True
+            return True #ie isDead = True
         else:
             self.snakeDrawer.setpos(self.grid[newHeadY][newHeadX])
             stampID = self.snakeDrawer.stamp()
@@ -130,6 +131,7 @@ class Snake:
             #at most 1 unit over its proper length
             self.posList.pop(0) #remove the tail unit of the snake
             self.snakeDrawer.clearstamp(self.stampIDList.pop(0))
+        return False #ie isDead = False
 
     def isCollision(self,headPosTuple):
         headX, headY = headPosTuple
