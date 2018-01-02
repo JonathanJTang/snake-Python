@@ -9,11 +9,8 @@ screenHeight = 500 #integer, in pixels
 xSquares = 10 #integer, number of horizontal virtual squares (determines the size of the board)
 ySquares = 10 #integer, number of vertical virtual squares (determines the size of the board)
 
-#Things done by the program
-squareWidth = screenWidth/xSquares
-squareHeight = screenHeight/ySquares
-# Make space in the grid list
-grid = [] # contains the actual coordinates of each square
+if not (xSquares >= 3 and ySquares >= 3):
+    raise ValueError
 
 
 def initGraphics():
@@ -25,58 +22,80 @@ def initGraphics():
     #Bottom left corner (0,screenHeight), top right corner (screenWidth,0)
     #to make javascript-like coordinate system with (0,0) in the top left corner
     wn.setworldcoordinates(0, screenHeight, screenWidth, 0)
-    wn.tracer(0, delay=1) #Turn turtle animation off (only each 0th screen update is performed)
+    """temporarily commented for easier debugging"""
+    #wn.tracer(0, delay=1) #Turn turtle animation off (only each 0th screen update is performed)
     wn.title("Game ???") #Include current score in title?
+    wn.colormode(255)
 
     #Set up the turtle objects
-    snake = turtle.Turtle() #will draw the snake
-    snake.speed(0)
-    snake.penup() #This should be the default state of the turtle
+    snakeDrawer = turtle.Turtle() #will draw the snake
+    snakeDrawer.speed(0)
+    snakeDrawer.penup() #This should be the default state of the turtle
 
-    misc = turtle.Turtle() #will draw miscellaneous stuff: borders, scores, etc
-    misc.speed(0)
-    misc.penup() #This should be the default state of the turtle
+    miscDrawer = turtle.Turtle() #will draw miscellaneous stuff: borders, scores, etc
+    miscDrawer.speed(0)
+    miscDrawer.penup() #This should be the default state of the turtle
     
     #drawBackground
-    #misc.setposition(?)
+    #miscDrawer.setposition(?)
+
+    #Register images used so they can be used in turtle
+    wn.register_shape("Maple_small.gif")
+
+    ### For testing purposes (temporary) ###
+    snakeDrawer.shape("circle")
+    snakeDrawer.fillcolor(255,255,255)
+    snakeDrawer.turtlesize(2,2)
+    ### temp ###
 
     """Note to Joseph: see below. Pls delete this comment when you've seen this"""
-    wn.update() #Use this method to display the updated screen
+    wn.update() #Use this method to display the updated screen after drawing with turtle
 
-    return wn, snake, misc # returns window & two turtles
+    return wn, snakeDrawer, miscDrawer # returns window & two turtles
 
-# runs initGraphics() and creates global variables wn, snake, and misc
-wn, snake, misc = initGraphics() 
+# runs initGraphics() and creates global variables wn, snakeDrawer, and miscDrawer
+wn, snakeDrawer, miscDrawer = initGraphics()
 
 
-#wn.register_shape("C:\Joseph\Maple_small.gif")
-#snake.shape("C:\Joseph\Maple_small.gif")
-wn.register_shape("Maple_small.gif")
-snake.shape("Maple_small.gif")
-
+#Things done by the program
+squareWidth = screenWidth/xSquares
+squareHeight = screenHeight/ySquares
+# Make space in the grid list
+grid = [] # contains the coordinates of each square used in turtle to display objects
 # set coordinates
-for x in range(xSquares):
+for y in range(ySquares):
     grid.append([])    
-    for y in range(ySquares):
-        grid[x].append((squareWidth*x,squareHeight*y))
-        snake.setposition(grid[x][y])
-        snake.stamp()
-print(grid)
+    for x in range(xSquares):
+        grid[y].append((squareWidth*x,squareHeight*y))
+        #snakeDrawer.setposition(grid[x][y])
+        #snakeDrawer.stamp()
+for i in range(xSquares): #For debugging
+    print(grid[i])
 
 #Needs testing, but below is code for the initial postion of the snake (center of screen)
 #snakePos = [grid[len(grid)//2 +1][len(grid[0])//2],grid[len(grid)//2][len(grid[0])//2],grid[len(grid)//2 -1][len(grid[0])//2]]
 
 
+### Jonathan's Testing
+from ClassSnake import *
+playerOneSnake = Snake(xSquares,ySquares,snakeDrawer,miscDrawer,grid) #grid as parameter is temporary
+wn.update()
+isDead = False
+while isDead != True:
+    isDead = playerOneSnake.processFrame("down")
+    wn.update()
+### ###
+
 '''
-snake.color("green")
-snake.pensize(4)
+snakeDrawer.color("green")
+snakeDrawer.pensize(4)
 wn.register_shape("C:\Joseph\Maple_small.gif")
-snake.shape("C:\Joseph\Maple_small.gif")
+snakeDrawer.shape("C:\Joseph\Maple_small.gif")
 for i in range(2):
-    snake.forward(screenWidth-20)
-    snake.left(90)
-    snake.forward(screenHeight-20)
-    snake.left(90)
+    snakeDrawer.forward(screenWidth-20)
+    snakeDrawer.left(90)
+    snakeDrawer.forward(screenHeight-20)
+    snakeDrawer.left(90)
 '''
 
 wn.mainloop() #We need to figure out where this line should go in the overall project
