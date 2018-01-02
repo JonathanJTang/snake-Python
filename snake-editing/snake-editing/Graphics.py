@@ -35,8 +35,11 @@ wn, snake, misc = initGraphics()
 
 snake.penup()
 snake.speed(0)
-wn.register_shape("C:\Joseph\Maple_small.gif")
-snake.shape("C:\Joseph\Maple_small.gif")
+#wn.register_shape("C:\Joseph\Maple_small.gif")
+#snake.shape("C:\Joseph\Maple_small.gif")
+wn.register_shape("Maple_small.gif")
+snake.shape("Maple_small.gif")
+
 # set coordinates
 for x in range(xSquares):
     grid.append([])    
