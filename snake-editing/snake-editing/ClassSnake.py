@@ -42,7 +42,7 @@ class BonusObj:
             return 0,0 #Potential future feature: a penalty for not getting the bonus?
 
 class Snake:
-    def __init__(self,xSquares,ySquares,snakeDrawer,miscDrawer,grid,obstaclePositionTuples=[]):
+    def __init__(self,xSquares,ySquares,snakeDrawer,miscDrawer,scorePrinter, grid,obstaclePositionTuples=[]):
         #grid as parameter is temporary
         """Initialize variables for a Snake instance.
             snakeDrawer and miscDrawer are turtle.Turtle() objects.
@@ -55,6 +55,7 @@ class Snake:
         #Turtle objects; assumes they have already been set up with penup() and speed 0
         self.snakeDrawer = snakeDrawer
         self.miscDrawer = miscDrawer
+        self.scorePrinter = scorePrinter
 
         self.headDirection = "left"
         self.xLimit = xSquares - 1
@@ -153,11 +154,15 @@ class Snake:
                     self.bonusObjOnScreen = None
                 else:
                     self.currentScore += bonusPoints
-                    self.length += snakeLengthChange
+                    seslf.length += snakeLengthChange
                     self.bonusObjOnScreen = None
 
         #Display updated score
-        pass
+        
+        self.scorePrinter.setpos(300, 50)
+        self.scorePrinter.clear()
+        self.scorePrinter.write("Score: " + str(self.currentScore), True, align="center", font=("Arial", 32, "bold"))
+
 
 
     def determineBonusSpawn(self):
