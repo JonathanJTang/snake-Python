@@ -47,13 +47,14 @@ def initGraphics():
     #miscDrawer.setposition(?)
 
     #Register images used so they can be used in turtle
-    wn.register_shape("Maple_small.gif")
+    wn.register_shape("snake-head-40px.gif") # snake head - green circle with two eyes - 40 px in diameter
+    wn.register_shape("snake-body-40px.gif") # snake body - plain green circle
 
     ### For testing purposes (temporary) ###
-    snakeDrawer.shape("circle")
+    snakeDrawer.shape("snake-body-40px.gif")
     snakeDrawer.fillcolor(255,255,255)
     snakeDrawer.turtlesize(2,2)
-    miscDrawer.shape("Maple_small.gif")
+    #miscDrawer.shape("Maple_small.gif")
     ### temp ###
 
     """Note to Joseph: see below. Pls delete this comment when you've seen this"""
