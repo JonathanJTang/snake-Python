@@ -39,7 +39,7 @@ class BonusObj:
         if self.earned == True:
             return self.pointsValue, self.snakeLengthChange
         else:
-            return None,None #Potential future feature: a penalty for not getting the bonus?
+            return 0,0 #Potential future feature: a penalty for not getting the bonus?
 
 class Snake:
     def __init__(self,xSquares,ySquares,snakeDrawer,miscDrawer,grid,obstaclePositionTuples=[]):
@@ -146,9 +146,12 @@ class Snake:
         if self.bonusObjOnScreen != None:
             bonusPoints, snakeLengthChange = self.bonusObjOnScreen.update()
             if bonusPoints != None:
-                self.currentScore += bonusPoints
-                self.length += snakeLengthChange
-                self.bonusObjOnScreen = None
+                if bonusPoints == 0: #BonusObj destroyed, but player didn't get it
+                    self.bonusObjOnScreen = None
+                else:
+                    self.currentScore += bonusPoints
+                    self.length += snakeLengthChange
+                    self.bonusObjOnScreen = None
 
         #Display updated score
         pass
@@ -164,7 +167,8 @@ class Snake:
             #bonusSpawnThreshold = 0.7
             if self.turnsSinceLastBonus > self.bonusMaxFreq:
                 randNumGenerator = random.Random()
-                if randNumGenerator.random() > 0.7: #random decimal number in range [0.0,1.0)
+                #randNumGenerator.random() returns a decimal number in range [0.0,1.0)
+                if randNumGenerator.random() > bonusSpawnThreshold:
                     #Set up a BonusObj
                     while True:
                         #Get place for bonusObj to spawn

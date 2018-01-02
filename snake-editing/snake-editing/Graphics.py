@@ -4,10 +4,15 @@ import turtle
 
 # variables defined in other functions
 #Variables potentially set by user
-screenWidth = 500 #integer, in pixels
-screenHeight = 500 #integer, in pixels
-xSquares = 10 #integer, number of horizontal virtual squares (determines the size of the board)
-ySquares = 10 #integer, number of vertical virtual squares (determines the size of the board)
+screenWidth = 600 #integer, in pixels
+screenHeight = 400 #integer, in pixels
+gridSquareSideLength = 40 #must be an integer that is a factor of both screenWidth and screenHeight
+
+#Things done by the program
+if screenHeight % gridSquareSideLength != 0 or screenWidth % gridSquareSideLength != 0:
+    raise ValueError("gridSquareSideLength must divide both screenHeight and screenWidth")
+xSquares = screenHeight//gridSquareSideLength #number of virtual squares in a row
+ySquares = screenWidth//gridSquareSideLength #number of virtual squares in a column
 
 if not (xSquares >= 3 and ySquares >= 3):
     raise ValueError
@@ -31,10 +36,12 @@ def initGraphics():
     snakeDrawer = turtle.Turtle() #will draw the snake
     snakeDrawer.speed(0)
     snakeDrawer.penup() #This should be the default state of the turtle
+    snakeDrawer.hideturtle() #This should be the default state of the turtle
 
     miscDrawer = turtle.Turtle() #will draw miscellaneous stuff: borders, scores, etc
     miscDrawer.speed(0)
     miscDrawer.penup() #This should be the default state of the turtle
+    miscDrawer.hideturtle() #This should be the default state of the turtle
     
     #drawBackground
     #miscDrawer.setposition(?)
@@ -58,9 +65,7 @@ def initGraphics():
 wn, snakeDrawer, miscDrawer = initGraphics()
 
 
-#Things done by the program
-squareWidth = screenWidth/xSquares
-squareHeight = screenHeight/ySquares
+
 # Make space in the grid list
 grid = [] # contains the coordinates of each square used in turtle to display objects
 # set coordinates
