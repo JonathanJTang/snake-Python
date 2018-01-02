@@ -73,7 +73,7 @@ grid = [] # contains the coordinates of each square used in turtle to display ob
 for y in range(ySquares):
     grid.append([])    
     for x in range(xSquares):
-        grid[y].append((gridSquareSideLength*x,gridSquareSideLength*y))
+        grid[y].append((gridSquareSideLength//2 + gridSquareSideLength*x, gridSquareSideLength//2 + gridSquareSideLength*y))
         #snakeDrawer.setposition(grid[x][y])
         #snakeDrawer.stamp()
 for i in range(xSquares): #For debugging
