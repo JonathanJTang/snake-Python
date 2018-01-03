@@ -37,6 +37,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Maple_small.gif" />
+    <Content Include="snake-head-small-eyes.png" />
   </ItemGroup>
   <Import Condition="Exists($(PtvsTargetsFile))" Project="$(PtvsTargetsFile)" />
   <Import Condition="!Exists($(PtvsTargetsFile))" Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
