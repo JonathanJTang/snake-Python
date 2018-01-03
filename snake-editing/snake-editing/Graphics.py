@@ -133,6 +133,10 @@ while isDead != True:
     wn.update()
     lastHeadDirection = currentHeadDirection
     time.sleep(1)
+
+#GAMEOVER message
+miscDrawer.setpos(300, 200) # where the center of the text is
+miscDrawer.write("GAME OVER", True, align="center", font=("Arial", 48, "bold"))
 print("Your Snake is Dead! :(") # gameover message
 ### ###
 

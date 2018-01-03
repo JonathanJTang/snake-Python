@@ -154,12 +154,11 @@ class Snake:
                     self.bonusObjOnScreen = None
                 else:
                     self.currentScore += bonusPoints
-                    seslf.length += snakeLengthChange
+                    self.length += snakeLengthChange
                     self.bonusObjOnScreen = None
 
-        #Display updated score
-        
-        self.scorePrinter.setpos(300, 50)
+        #Display updated score        
+        self.scorePrinter.setpos(300, 50) # where the center of the text is
         self.scorePrinter.clear()
         self.scorePrinter.write("Score: " + str(self.currentScore), True, align="center", font=("Arial", 32, "bold"))
 
@@ -194,7 +193,7 @@ class Snake:
             internal variables and the screen display"""
         #For now, we'll put keyboard listening code outside the class.
         #It could potentially be moved inside here though"""
-        if self.moveSnake(snakeHeadDirection) == -1:
+        if self.moveSnake(snakeHeadDirection) == -1:            
             return True #ie isDead = True
         self.updateScore()
         #self.determineBonusSpawn()
