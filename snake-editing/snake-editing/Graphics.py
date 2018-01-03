@@ -54,7 +54,10 @@ def initGraphics():
     #miscDrawer.setposition(?)
 
     #Register images used so they can be used in turtle
-    wn.register_shape("snake-head-40px.gif") # snake head - green circle with two eyes - 40 px in diameter
+    wn.register_shape("snake-head-40px-1.gif") # snake head - up - green circle with two eyes - 40 px in diameter
+    wn.register_shape("snake-head-40px-2.gif") # snake head - left
+    wn.register_shape("snake-head-40px-3.gif") # snake head - down
+    wn.register_shape("snake-head-40px-4.gif") # snake head - right
     wn.register_shape("snake-body-40px.gif") # snake body - plain green circle
 
     ### For testing purposes (temporary) ###

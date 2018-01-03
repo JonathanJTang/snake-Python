@@ -8,28 +8,73 @@ Edited
 import turtle
 import time
 from ClassSnake import *
-
+'''
+num = 3
+t = 1
+'''
 pauseGame = False
+firstTime = True
 def pauseGameHandler():
     """Called whenever the key for pause game is pressed"""
     print("space key pressed") #For debugging
     global pauseGame
     global textPrinter
+    global pauseElapsed # stores the total time paused (accumulates with every pause)
+    global firstTime # not the best way, but it makes pauseTimerStart start only once - at the start of the pause
+    '''
+    global num
+    global t
+    '''
     if pauseGame == True:
-        pauseGame = False
         #unPauseGameGraphics
         textPrinter.undo() #Remove "game paused" message
         textPrinter.setpos(300, 200) # where the center of the text is
-        for num in range(3,0,-1):
-            textPrinter.write("{0}".format(num), True, align="center", font=("Arial", 48, "bold"))
-            time.sleep(1)
-            textPrinter.undo()
         
+        '''previousTime = time.perf_counter()
+        while True: 
+            
+            currentTime = time.perf_counter() 
+                
+            if t <= currentTime-previousTime < t+1: 
+                textPrinter.undo()               
+                textPrinter.write(str(num), True, align="center", font=("Arial", 48, "bold"))
+                num -= 1
+                t += 1
+            if num == 0:
+                num = 3
+                t = 1
+                pauseGame = False
+                break
+'''
+        # delete paused time from currentTime
+
+        # pauseTimeStart is the benchmark of the start of the pause
+        # pauseElapsed is the difference between pauseTimeStart and the current time when the pause ends
+        # ! (Global variable) It stores the total time paused (accumulates with every pause)
+        ''' NOTE: change variable names if it's confusing'''
+        # not the best way, but it makes pauseTimerStart start only once - at the start of the pause
+        if firstTime == True:
+            firstTime = False            
+            pauseTimeStart = time.perf_counter()            
+        
+        # Print 3, 2, 1 before game resumes        
+        for num in range(3,0,-1):                          
+            textPrinter.write("{0}".format(num), True, align="center", font=("Arial", 48, "normal"))
+            time.sleep(1)
+            textPrinter.undo()  
+        # resumes game (after the "3, 2, 1")
+        pauseGame = False
+        # adds pause time interval to be subtracted from the current time
+        pauseElapsed += time.perf_counter()-pauseTimeStart
+        # allow program to start pauseTimer again for the next time the game is paused
+        firstTime = True
+                    
+     
     else:
-        pauseGame = True
+        pauseGame = True # pauses game
         #pauseGameGraphics
         textPrinter.setpos(300, 200) # where the center of the text is
-        textPrinter.write("GAME PAUSED", True, align="center", font=("Arial", 48, "bold"))
+        textPrinter.write("GAME PAUSED", True, align="center", font=("Arial", 48, "normal"))
 
 if __name__ == "__main__":
     #Initialize variables
@@ -81,10 +126,16 @@ if __name__ == "__main__":
 
     #Main game loop
     previousTime = time.perf_counter()
-    while(isDead != True):
-        currentTime = time.perf_counter()
-        wn.update() #apparently needed to listen to key presses
-        while(currentTime - previousTime >= loopInterval and pauseGame == False):
+
+    # variable to delete paused time from currentTime
+    pauseElapsed = 0   
+
+    while isDead != True:
+        
+        currentTime = time.perf_counter()-pauseElapsed
+               
+        wn.update() # in order to listen to key presses
+        while currentTime - previousTime >= loopInterval and pauseGame == False:
             #print(currentTime - previousTime)
             #out1=currentTime - previousTime
             previousTime = currentTime #start countdown from beginning of loop
