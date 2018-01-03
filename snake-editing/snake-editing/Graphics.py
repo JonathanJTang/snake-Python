@@ -79,6 +79,18 @@ for y in range(ySquares):
 for i in range(xSquares): #For debugging
     print(grid[i])
 
+def drawWalls():
+    #draws walls
+    miscDrawer.setpos(0, 0)#top-left corner again
+    miscDrawer.pendown()
+    miscDrawer.setpos(0, gridSquareSideLength*ySquares) #bottom-left corner
+    miscDrawer.setpos(gridSquareSideLength*xSquares, gridSquareSideLength*ySquares) #bottom-right corner
+    miscDrawer.setpos(gridSquareSideLength*xSquares, 0) #top-right corner
+    miscDrawer.setpos(0, 0)#top-left corner again
+    miscDrawer.penup()
+
+drawWalls()
+
 #Needs testing, but below is code for the initial postion of the snake (center of screen)
 #snakePos = [grid[len(grid)//2 +1][len(grid[0])//2],grid[len(grid)//2][len(grid[0])//2],grid[len(grid)//2 -1][len(grid[0])//2]]
 
