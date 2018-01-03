@@ -8,54 +8,43 @@ Edited
 import turtle
 import time
 from ClassSnake import *
-'''
-num = 3
-t = 1
-'''
+
 pauseGame = False
+'''
 firstTime = True
+'''
 def pauseGameHandler():
     """Called whenever the key for pause game is pressed"""
     print("space key pressed") #For debugging
     global pauseGame
     global textPrinter
     global pauseElapsed # stores the total time paused (accumulates with every pause)
-    global firstTime # not the best way, but it makes pauseTimerStart start only once - at the start of the pause
-    '''
-    global num
-    global t
+    '''global firstTime # not the best way, but it makes pauseTimerStart start only once - at the start of the pause
     '''
     if pauseGame == True:
         #unPauseGameGraphics
         textPrinter.undo() #Remove "game paused" message
         textPrinter.setpos(300, 200) # where the center of the text is
         
-        '''previousTime = time.perf_counter()
-        while True: 
-            
-            currentTime = time.perf_counter() 
-                
-            if t <= currentTime-previousTime < t+1: 
-                textPrinter.undo()               
-                textPrinter.write(str(num), True, align="center", font=("Arial", 48, "bold"))
-                num -= 1
-                t += 1
-            if num == 0:
-                num = 3
-                t = 1
-                pauseGame = False
-                break
-'''
         # delete paused time from currentTime
 
         # pauseTimeStart is the benchmark of the start of the pause
-        # pauseElapsed is the difference between pauseTimeStart and the current time when the pause ends
-        # ! (Global variable) It stores the total time paused (accumulates with every pause)
+        # pauseElapsed is the difference between pauseTimeStart and the time stamp of the moment the pause ends
+        # pauseElapsed is a global variable. It stores the total time paused (accumulates with every pause)
         ''' NOTE: change variable names if it's confusing'''
-        # not the best way, but it makes pauseTimerStart start only once - at the start of the pause
+
+        '''# not the best way, but it makes pauseTimerStart start only once - at the start of the pause
         if firstTime == True:
-            firstTime = False            
-            pauseTimeStart = time.perf_counter()            
+            firstTime = False   '''         
+        
+        '''###########################################
+           ##             SEE HERE                  ##
+           ###########################################'''
+        # marks the time when the pause starts...or it's supposed to. 
+        # It technically marks the time when the spacebar is pressed again to resume the game
+        # and that isn't the full pause time
+        # but it works, without me knowing why   
+        pauseTimeStart = time.perf_counter()            
         
         # Print 3, 2, 1 before game resumes        
         for num in range(3,0,-1):                          
@@ -66,8 +55,8 @@ def pauseGameHandler():
         pauseGame = False
         # adds pause time interval to be subtracted from the current time
         pauseElapsed += time.perf_counter()-pauseTimeStart
-        # allow program to start pauseTimer again for the next time the game is paused
-        firstTime = True
+        '''# allow program to start pauseTimer again for the next time the game is paused
+        firstTime = True'''
                     
      
     else:
