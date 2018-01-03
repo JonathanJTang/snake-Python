@@ -43,6 +43,11 @@ def initGraphics():
     miscDrawer.penup() #This should be the default state of the turtle
     miscDrawer.hideturtle() #This should be the default state of the turtle
     
+    scorePrinter = turtle.Turtle() # will print score on screen
+    scorePrinter.speed(0)
+    scorePrinter.penup() #This should be the default state of the turtle
+    scorePrinter.hideturtle() #This should be the default state of the turtle
+
     #drawBackground
     #miscDrawer.setposition(?)
 
@@ -60,10 +65,10 @@ def initGraphics():
     """Note to Joseph: see below. Pls delete this comment when you've seen this"""
     wn.update() #Use this method to display the updated screen after drawing with turtle
 
-    return wn, snakeDrawer, miscDrawer # returns window & two turtles
+    return wn, snakeDrawer, miscDrawer, scorePrinter # returns window & two turtles
 
 # runs initGraphics() and creates global variables wn, snakeDrawer, and miscDrawer
-wn, snakeDrawer, miscDrawer = initGraphics()
+wn, snakeDrawer, miscDrawer, scorePrinter = initGraphics()
 
 
 
@@ -97,7 +102,7 @@ drawWalls()
 
 ### Jonathan's Testing
 from ClassSnake import *
-playerOneSnake = Snake(xSquares,ySquares,snakeDrawer,miscDrawer,grid) #grid as parameter is temporary
+playerOneSnake = Snake(xSquares,ySquares,snakeDrawer,miscDrawer, scorePrinter, grid) #grid as parameter is temporary
 wn.update()
 isDead = False
 lastHeadDirection = "left"
