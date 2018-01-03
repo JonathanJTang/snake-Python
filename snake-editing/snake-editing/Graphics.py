@@ -112,6 +112,7 @@ while isDead != True:
     wn.update()
     lastHeadDirection = currentHeadDirection
     time.sleep(1)
+print("Your Snake is Dead! :(") # gameover message
 ### ###
 
 '''

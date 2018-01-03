@@ -65,7 +65,7 @@ class Snake:
         
         ''' disabled user-set initialPointTuple functionality '''
 
-        self.properLength = 3 #initial length of snake
+        self.properLength = 5 #initial length of snake
         for i in range(self.properLength):
             self.posList.append((xSquares//2-i,ySquares//2))
             self.snakeDrawer.setpos(self.grid[ySquares//2][xSquares//2-i])
