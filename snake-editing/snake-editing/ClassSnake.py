@@ -221,8 +221,10 @@ class Snake:
     def upKeyHandler(self):
         """Will be called whenever key 'up' is pressed"""
         print("up key pressed") #For debugging
-        if self.headDirectionSet is False: #Only the first valid key press will be accepted
-            if self.headDirection != "down": #last headDirection cannot be "down"
+        #Only the first valid key press will be accepted        
+        if self.headDirectionSet is False and self.lastDirection != "up": 
+            # And it cannot turn "up" when it's already going up (to remove bugs in the graphics part)
+            if self.headDirection != "down" and self.headDirection != "up": #last headDirection cannot be "down"
                 self.lastDirection = self.headDirection
                 self.headDirection = "up" #Set new headDirection                
                 self.headDirectionSet = True
@@ -231,7 +233,7 @@ class Snake:
         """Will be called whenever key 'down' is pressed"""
         print("down key pressed") #For debugging
         if self.headDirectionSet is False: #Only the first valid key press will be accepted
-            if self.headDirection != "up": #last headDirection cannot be "up"
+            if self.headDirection != "up" and self.headDirection != "down": #last headDirection cannot be "up"
                 self.lastDirection = self.headDirection
                 self.headDirection = "down" #Set new headDirection
                 self.headDirectionSet = True
@@ -240,7 +242,7 @@ class Snake:
         """Will be called whenever key 'left' is pressed"""
         print("left key pressed") #For debugging
         if self.headDirectionSet is False: #Only the first valid key press will be accepted
-            if self.headDirection != "right": #last headDirection cannot be "right"
+            if self.headDirection != "right" and self.headDirection != "left": #last headDirection cannot be "right"
                 self.lastDirection = self.headDirection
                 self.headDirection = "left" #Set new headDirection
                 self.headDirectionSet = True
@@ -249,7 +251,7 @@ class Snake:
         """Will be called whenever key 'right' is pressed"""
         print("right key pressed") #For debugging
         if self.headDirectionSet is False: #Only the first valid key press will be accepted
-            if self.headDirection != "left": #last headDirection cannot be "left"
+            if self.headDirection != "left" and self.headDirection != "right": #last headDirection cannot be "left"
                 self.lastDirection = self.headDirection
                 self.headDirection = "right" #Set new headDirection
                 self.headDirectionSet = True
