@@ -59,6 +59,7 @@ class Snake:
         self.scorePrinter = scorePrinter
 
         self.headDirection = "left"
+        self.lastDirection = "left"
         self.headDirectionSet = False
         self.xLimit = xSquares - 1
         self.yLimit = ySquares - 1
@@ -96,10 +97,12 @@ class Snake:
         self.scorePrinter.write("Score: " + str(self.currentScore), True, align="center", font=("Arial", 32, "bold"))
         
 
-    def moveSnake(self,newHeadDirection):
+    def moveSnake(self,newHeadDirection, lastHeadDirection):
         """Handle both internal variables and screen display to move
             the snake one unit"""
         print("newHeadDirection is", newHeadDirection)
+        print("lastHeadDirection is", lastHeadDirection)
+        print()
         #Add new head unit of snake
         lastHeadX, lastHeadY = self.posList[len(self.posList)-1]
         if newHeadDirection == "left":
@@ -122,8 +125,30 @@ class Snake:
             return True #ie isDead = True
         else:
             self.snakeDrawer.setpos(self.grid[newHeadY][newHeadX])
-            stampID = self.snakeDrawer.stamp()
+
+            # changes the snake head image to make it turn a specific direction
+            if newHeadDirection == "up":
+                self.snakeDrawer.shape("snake-head-40px-1.gif")
+            if newHeadDirection == "left":
+                self.snakeDrawer.shape("snake-head-40px-2.gif")
+            if newHeadDirection == "down":
+                self.snakeDrawer.shape("snake-head-40px-3.gif")
+            if newHeadDirection == "right":
+                self.snakeDrawer.shape("snake-head-40px-4.gif")
+            # stamp new heads
+            stampID = self.snakeDrawer.stamp()            
             self.stampIDList.append(stampID)
+
+            # only if the snake just turned
+            if newHeadDirection != lastHeadDirection:
+                # try to overwrite previous "heads"
+                self.snakeDrawer.shape("snake-body-40px.gif")
+                self.snakeDrawer.setpos(self.grid[lastHeadY][lastHeadX])
+                overwriteStampID = self.snakeDrawer.stamp()
+                # clear the stamp whose ID is the second-to-last value of StampIDLIst, i.e. the body after the haed
+                self.snakeDrawer.clearstamp(self.stampIDList[len(self.stampIDList)-2])
+                # overwrite the stamp ID of the previous "head"
+                self.stampIDList[len(self.stampIDList)-2] = overwriteStampID
 
         #Remove tail unit of snake, if necessary
         if len(self.posList) > self.properLength:
@@ -198,7 +223,8 @@ class Snake:
         print("up key pressed") #For debugging
         if self.headDirectionSet is False: #Only the first valid key press will be accepted
             if self.headDirection != "down": #last headDirection cannot be "down"
-                self.headDirection = "up" #Set new headDirection
+                self.lastDirection = self.headDirection
+                self.headDirection = "up" #Set new headDirection                
                 self.headDirectionSet = True
 
     def downKeyHandler(self):
@@ -206,6 +232,7 @@ class Snake:
         print("down key pressed") #For debugging
         if self.headDirectionSet is False: #Only the first valid key press will be accepted
             if self.headDirection != "up": #last headDirection cannot be "up"
+                self.lastDirection = self.headDirection
                 self.headDirection = "down" #Set new headDirection
                 self.headDirectionSet = True
 
@@ -214,6 +241,7 @@ class Snake:
         print("left key pressed") #For debugging
         if self.headDirectionSet is False: #Only the first valid key press will be accepted
             if self.headDirection != "right": #last headDirection cannot be "right"
+                self.lastDirection = self.headDirection
                 self.headDirection = "left" #Set new headDirection
                 self.headDirectionSet = True
 
@@ -222,13 +250,14 @@ class Snake:
         print("right key pressed") #For debugging
         if self.headDirectionSet is False: #Only the first valid key press will be accepted
             if self.headDirection != "left": #last headDirection cannot be "left"
+                self.lastDirection = self.headDirection
                 self.headDirection = "right" #Set new headDirection
                 self.headDirectionSet = True
 
     def processFrame(self):
         """The main game loop should call this method once each loop.
             This method updates internal variables and the screen display"""
-        isDead = self.moveSnake(self.headDirection)
+        isDead = self.moveSnake(self.headDirection, self.lastDirection)
         self.headDirectionSet = False
         if isDead == True:            
             return True #ie isDead = True
