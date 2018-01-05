@@ -132,6 +132,7 @@ if __name__ == "__main__":
         
             #print("game loop {0}".format(count))
             gameSpeed += 0.03 # make the caterpillar speed up gradually :)
+            loopInterval = 1/gameSpeed
             """ Alternative speeding up method
             if loopsSinceLastSpeedIncrease > 20:
                 gameSpeed += 0.2
