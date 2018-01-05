@@ -41,6 +41,12 @@
     <Content Include="leaf-green-40px.gif" />
     <Content Include="Maple_small.gif" />
     <Content Include="snake-body-40px.gif" />
+    <Content Include="snake-body-h.gif" />
+    <Content Include="snake-body-v.gif" />
+    <Content Include="snake-head-1.gif" />
+    <Content Include="snake-head-2.gif" />
+    <Content Include="snake-head-3.gif" />
+    <Content Include="snake-head-4.gif" />
     <Content Include="snake-head-40px-1.gif" />
     <Content Include="snake-head-40px-2.gif" />
     <Content Include="snake-head-40px-3.gif" />
