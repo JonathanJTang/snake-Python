@@ -10,6 +10,7 @@ try:
     # see https://docs.python.org/3/library/winsound.html
     winsoundInstalled = True
 except: #on Macs there will be ImportError
+    #print("Module winsound not installed on device. All game sounds will be disabled")
     winsoundInstalled = False
 
 
@@ -70,6 +71,10 @@ class Caterpillar:
                     "down": "up",
                     "left": "right",
                     "right": "left"}
+    headShape = {"up": "snake-head-40px-1.gif",
+                      "down": "snake-head-40px-3.gif",
+                      "left": "snake-head-40px-2.gif",
+                      "right": "snake-head-40px-4.gif"}
 
     def __init__(self,xSquares,ySquares,caterpillarDrawer,miscDrawer,scorePrinter, bonusObjDrawer, grid,obstaclePositionTuples=[]):
         #grid as parameter is temporary
@@ -119,9 +124,13 @@ class Caterpillar:
         #potentially affect the game score
 
         #Set up initial graphics for the caterpillar object
+        self.caterpillarDrawer.shape("snake-body-40px.gif")
         for i in range(-2,-2+self.properLength):
             self.posList.append((xSquares//2-i,ySquares//2))
             self.caterpillarDrawer.setpos(self.grid[ySquares//2][xSquares//2-i])
+            if i == 2: #Switch image for catepillar head
+                """NOTE: there should be a better way to do this"""
+                self.caterpillarDrawer.shape(self.headShape[self.currentHeadDirection])
             stampID = self.caterpillarDrawer.stamp()
             self.stampIDList.append(stampID)
         self.scorePrinter.setpos(300, 50) # where the center of the text is
@@ -139,24 +148,20 @@ class Caterpillar:
         print("lastHeadDirection is", self.lastHeadDirection)
         print()
 
-        #Find and record new headPosTuple of caterpillar, change head image accordingly
+        #Find and record new headPosTuple of caterpillar
         lastHeadX, lastHeadY = self.posList[len(self.posList)-1]
         if newHeadDirection == "left":
             newHeadX = lastHeadX-1
             newHeadY = lastHeadY
-            self.caterpillarDrawer.shape("snake-head-40px-2.gif")
         elif newHeadDirection == "right":
             newHeadX = lastHeadX+1
             newHeadY = lastHeadY
-            self.caterpillarDrawer.shape("snake-head-40px-4.gif")
         elif newHeadDirection == "up":
             newHeadX = lastHeadX
             newHeadY = lastHeadY-1 #Coordinate system of display has downwards y-direction as positive
-            self.caterpillarDrawer.shape("snake-head-40px-1.gif")
         elif newHeadDirection == "down":
             newHeadX = lastHeadX
             newHeadY = lastHeadY+1 #Coordinate system of display has downwards y-direction as positive
-            self.caterpillarDrawer.shape("snake-head-40px-3.gif")
         self.posList.append((newHeadX,newHeadY))
 
         #Determine if the caterpillar has run into anything that would kill it
@@ -165,6 +170,7 @@ class Caterpillar:
             return True #ie isDead = True
         else:
             #Stamp new head
+            self.caterpillarDrawer.shape(self.headShape[newHeadDirection])
             self.caterpillarDrawer.setpos(self.grid[newHeadY][newHeadX])
             stampID = self.caterpillarDrawer.stamp()            
             self.stampIDList.append(stampID)
@@ -216,10 +222,12 @@ class Caterpillar:
             if bonusPoints != None:
                 if bonusPoints == 0: #BonusObj destroyed, but player didn't get it
                     self.bonusObjOnScreen = None
+                    self.turnsSinceLastBonus = 0
                 else:
                     self.currentScore += bonusPoints
                     self.properLength += caterpillarLengthChange
                     self.bonusObjOnScreen = None
+                    self.turnsSinceLastBonus = 0
 
         #Display updated score
         self.scorePrinter.undo()        
@@ -241,16 +249,14 @@ class Caterpillar:
                 #randNumGenerator.random() returns a decimal number in range [0.0,1.0)
                 if randNumGenerator.random() > bonusSpawnThreshold:
                     #Set up a BonusObj
-                    while True:
+                    for i in range(self.xLimit*self.yLimit): #set a maximum of attempts for finding a suitable bonus position
                         #Get place for bonusObj to spawn
                         x = randNumGenerator.randint(0,self.xLimit)
                         y = randNumGenerator.randint(0,self.yLimit)
-                        for i in range(xSquares): #try a maximum of 10 times to find a suitable bonus position
-                            if (x,y) not in self.posList: #bonusObj cannot spawn on a space the caterpillar occupies,
-                                break #only break if (x,y) is not a space the caterpillar is on
-                    self.bonusObjOnScreen = BonusObj(self.bonusObjDrawer,"apple",(x,y),self.grid[y][x],10,10,1)
+                        if (x,y) not in self.posList: #bonusObj cannot spawn on a space the caterpillar occupies,
+                            break #only break if (x,y) is not a space the caterpillar is on
+                    self.bonusObjOnScreen = BonusObj(self.bonusObjDrawer,"apple",(x,y),self.grid[y][x],10,10,3)
                     """parameters of BonusObj.__init__() need to be confirmed"""
-                    self.turnsSinceLastBonus = 0
     
     def processKeyPress(self,pressedKeyStr):
         """Processes genuine key presses (first press per turn)"""

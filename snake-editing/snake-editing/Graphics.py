@@ -69,11 +69,6 @@ def initGraphics():
     wn.register_shape("apple-2-40px.gif") # Bonus object - alternative apple (not good cuz it has white background)
     
 
-    ### For testing purposes (temporary) ###
-    caterpillarDrawer.shape("snake-body-40px.gif")
-    caterpillarDrawer.fillcolor(255,255,255)
-    ### temp ###
-
     #Draw boundaries of game board
     miscDrawer.pensize(3)
     miscDrawer.setpos(0, 0)#top-left corner again
