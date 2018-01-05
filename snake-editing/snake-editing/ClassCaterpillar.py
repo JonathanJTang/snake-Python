@@ -75,6 +75,13 @@ class Caterpillar:
                       "down": "snake-head-40px-3.gif",
                       "left": "snake-head-40px-2.gif",
                       "right": "snake-head-40px-4.gif"}
+    bodyShape = {"vertical": "snake-body-v.gif",
+                 "horizontal": "snake-body-h.gif",
+                 "curveUpRight": "", #Add here
+                 "curveUpLeft": "", #Add here
+                 "curveDownRight": "", #Add here
+                 "curveDownLeft": "", #Add here
+                 "oldGeneric": "snake-body-40px.gif"} #Eventually delete this entry
 
     def __init__(self,xSquares,ySquares,caterpillarDrawer,miscDrawer,scorePrinter, bonusObjDrawer, grid,obstaclePositionTuples=[]):
         #grid as parameter is temporary
@@ -124,11 +131,11 @@ class Caterpillar:
         #potentially affect the game score
 
         #Set up initial graphics for the caterpillar object
-        self.caterpillarDrawer.shape("snake-body-40px.gif")
+        self.caterpillarDrawer.shape(self.bodyShape["horizontal"])
         for i in range(-2,-2+self.properLength):
             self.posList.append((xSquares//2-i,ySquares//2))
             self.caterpillarDrawer.setpos(self.grid[ySquares//2][xSquares//2-i])
-            if i == 2: #Switch image for catepillar head
+            if i == 2: #Switch image for caterpillar head
                 """NOTE: there should be a better way to do this"""
                 self.caterpillarDrawer.shape(self.headShape[self.currentHeadDirection])
             stampID = self.caterpillarDrawer.stamp()
@@ -142,10 +149,12 @@ class Caterpillar:
             the caterpillar one unit"""
         if self.currentHeadDirectionSet == False: #No key press from user detected
             self.lastHeadDirection = self.currentHeadDirection #Update self.lastHeadDirection
+        #In case instance attributes change in the middle of method
         newHeadDirection = self.currentHeadDirection
+        previousHeadDirection = self.lastHeadDirection
 
         print("newHeadDirection is", newHeadDirection)
-        print("lastHeadDirection is", self.lastHeadDirection)
+        print("previousHeadDirection is", previousHeadDirection)
         print()
 
         #Find and record new headPosTuple of caterpillar
@@ -175,8 +184,35 @@ class Caterpillar:
             stampID = self.caterpillarDrawer.stamp()            
             self.stampIDList.append(stampID)
 
-            #Remove and replace previous head image
-            self.caterpillarDrawer.shape("snake-body-40px.gif")
+            #Remove and replace previous head image with appropriate body unit
+            if (previousHeadDirection == "left" and newHeadDirection == "left") \
+                or (previousHeadDirection == "left" and newHeadDirection == "right") \
+                or (previousHeadDirection == "right" and newHeadDirection == "left") \
+                or (previousHeadDirection == "right" and newHeadDirection == "right"):
+                bodyShapeType = "horizontal"
+            elif (previousHeadDirection == "up" and newHeadDirection == "up") \
+                or (previousHeadDirection == "up" and newHeadDirection == "down") \
+                or (previousHeadDirection == "down" and newHeadDirection == "up") \
+                or (previousHeadDirection == "down" and newHeadDirection == "down"):
+                bodyShapeType = "vertical"
+            else:
+                bodyShapeType = "oldGeneric"
+            '''
+            elif (previousHeadDirection == "up" and newHeadDirection == "right") \
+                or (previousHeadDirection == "right" and newHeadDirection == "up"):
+                bodyShapeType = "curveUpRight"
+            elif (previousHeadDirection == "up" and newHeadDirection == "left") \
+                or (previousHeadDirection == "left" and newHeadDirection == "up"):
+                bodyShapeType = "curveUpLeft"
+            elif (previousHeadDirection == "down" and newHeadDirection == "right") \
+                or (previousHeadDirection == "right" and newHeadDirection == "down"):
+                bodyShapeType = "curveDownRight"
+            elif (previousHeadDirection == "down" and newHeadDirection == "left") \
+                or (previousHeadDirection == "left" and newHeadDirection == "down"):
+                bodyShapeType = "curveDownLeft"
+            '''
+            
+            self.caterpillarDrawer.shape(self.bodyShape[bodyShapeType])
             self.caterpillarDrawer.setpos(self.grid[lastHeadY][lastHeadX])
             overwriteStampID = self.caterpillarDrawer.stamp()
             #Remove the stamp whose ID is the second-to-last value of StampIDLIst, i.e. the body unit after the head

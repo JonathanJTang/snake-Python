@@ -64,6 +64,11 @@ def initGraphics():
     wn.register_shape("snake-head-40px-3.gif") # caterpillar head - down
     wn.register_shape("snake-head-40px-4.gif") # caterpillar head - right
     wn.register_shape("snake-body-40px.gif") # caterpillar body - plain green circle
+    wn.register_shape("snake-body-v.gif") # caterpillar body - vertical
+    wn.register_shape("snake-body-h.gif") # caterpillar body - horizontal
+    wn.register_shape("snake-tail-1.gif") # caterpillar tail - down
+    # caterpillar tail
+    # caterpillar curve
     wn.register_shape("leaf-green-40px.gif") # Bonus object - green leaf (from Khan Academy)
     wn.register_shape("apple-40px.gif") # Bonus object - apple (good cuz it has transparent background)
     wn.register_shape("apple-2-40px.gif") # Bonus object - alternative apple (not good cuz it has white background)
