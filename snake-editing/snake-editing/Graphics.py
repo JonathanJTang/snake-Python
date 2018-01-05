@@ -30,10 +30,10 @@ def initGraphics():
     wn.colormode(255)
 
     #Set up the turtle objects
-    snakeDrawer = turtle.Turtle() #will draw the snake
-    snakeDrawer.speed(0)
-    snakeDrawer.penup() #This should be the default state of the turtle
-    snakeDrawer.hideturtle() #This should be the default state of the turtle
+    caterpillarDrawer = turtle.Turtle() #will draw the caterpillar
+    caterpillarDrawer.speed(0)
+    caterpillarDrawer.penup() #This should be the default state of the turtle
+    caterpillarDrawer.hideturtle() #This should be the default state of the turtle
 
     miscDrawer = turtle.Turtle() #will draw miscellaneous stuff: borders, scores, etc
     miscDrawer.speed(0)
@@ -59,24 +59,22 @@ def initGraphics():
     #miscDrawer.setposition(?)
 
     #Register images used so they can be used in turtle
-    wn.register_shape("snake-head-40px-1.gif") # snake head - up - green circle with two eyes - 40 px in diameter
-    wn.register_shape("snake-head-40px-2.gif") # snake head - left
-    wn.register_shape("snake-head-40px-3.gif") # snake head - down
-    wn.register_shape("snake-head-40px-4.gif") # snake head - right
-    wn.register_shape("snake-body-40px.gif") # snake body - plain green circle
+    wn.register_shape("snake-head-40px-1.gif") # caterpillar head - up - green circle with two eyes - 40 px in diameter
+    wn.register_shape("snake-head-40px-2.gif") # caterpillar head - left
+    wn.register_shape("snake-head-40px-3.gif") # caterpillar head - down
+    wn.register_shape("snake-head-40px-4.gif") # caterpillar head - right
+    wn.register_shape("snake-body-40px.gif") # caterpillar body - plain green circle
     wn.register_shape("leaf-green-40px.gif") # Bonus object - green leaf (from Khan Academy)
     wn.register_shape("apple-40px.gif") # Bonus object - apple (good cuz it has transparent background)
     wn.register_shape("apple-2-40px.gif") # Bonus object - alternative apple (not good cuz it has white background)
     
 
     ### For testing purposes (temporary) ###
-    snakeDrawer.shape("snake-body-40px.gif")
-    snakeDrawer.fillcolor(255,255,255)
-    snakeDrawer.turtlesize(2,2)
-    #miscDrawer.shape("Maple_small.gif")
+    caterpillarDrawer.shape("snake-body-40px.gif")
+    caterpillarDrawer.fillcolor(255,255,255)
     ### temp ###
 
-    #draw walls
+    #Draw boundaries of game board
     miscDrawer.pensize(3)
     miscDrawer.setpos(0, 0)#top-left corner again
     miscDrawer.pendown()
@@ -90,60 +88,7 @@ def initGraphics():
     """Note to Joseph: see below. Pls delete this comment when you've seen this"""
     wn.update() #Use this method to display the updated screen after drawing with turtle
 
-    return wn, snakeDrawer, miscDrawer, textPrinter, scorePrinter, bonusObjDrawer # returns window & two turtles
+    return wn, caterpillarDrawer, miscDrawer, textPrinter, scorePrinter, bonusObjDrawer # returns window & two turtles
 
-# runs initGraphics() and creates global variables wn, snakeDrawer, miscDrawer, and bonusObjDrawer
-wn, snakeDrawer, miscDrawer, textPrinter, scorePrinter, bonusObjDrawer = initGraphics()
-
-
-# Build grid, which matches coordinates in the virtual grid with turtle coordinates used to display objects
-grid = []
-for y in range(ySquares): #traverse rows
-    grid.append([])    
-    for x in range(xSquares): #traverse columns
-        grid[y].append((gridSquareSideLength//2 + gridSquareSideLength*x, gridSquareSideLength//2 + gridSquareSideLength*y))
-
-for i in range(ySquares): #For debugging
-    print(grid[i])
-
-
-'''
-### Jonathan's Testing
-from ClassSnake import *
-playerOneSnake = Snake(xSquares,ySquares,snakeDrawer,miscDrawer, scorePrinter, grid) #grid as parameter is temporary
-wn.update()
-isDead = False
-lastHeadDirection = "left"
-import random
-import time
-rng = random.Random()
-d = {1: "left",2:"right",3:"up",4:"down"}
-
-def opp(headDirection):
-    if headDirection == "left":
-        return "right"
-    elif headDirection == "right":
-        return "left"
-    elif headDirection == "up":
-        return "down"
-    elif headDirection == "down":
-        return "up"
-
-while isDead != True:  
-    while True:
-        newHeadDirection = d[rng.randint(1,4)]
-        if newHeadDirection != opp(lastHeadDirection):
-            break;
-    isDead = playerOneSnake.processFrame(newHeadDirection)
-    wn.update()
-    lastHeadDirection = newHeadDirection
-    time.sleep(1)
-
-#GAMEOVER message
-miscDrawer.setpos(300, 200) # where the center of the text is
-miscDrawer.write("GAME OVER", True, align="center", font=("Arial", 48, "bold"))
-print("Your Snake is Dead! :(") # gameover message
-### ###
-'''
-
-#wn.mainloop() #We need to figure out where this line should go in the overall project
+"""We need to figure out where the line below should go in the overall project"""
+#wn.mainloop()

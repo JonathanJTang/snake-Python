@@ -7,7 +7,7 @@ Edited
 '''
 import turtle
 import time
-from ClassSnake import *
+from ClassCaterpillar import *
 
 pauseGame = False
 '''
@@ -68,9 +68,10 @@ def pauseGameHandler():
 if __name__ == "__main__":
     #Initialize variables
     isDead = False
-    count = 0
-    gameSpeed = 2
-    loopInterval = 1/gameSpeed #Maybe too fast?
+    loopCount = 0
+    loopsSinceLastSpeedIncrease = 0
+    gameSpeed = 1
+    loopInterval = 1/gameSpeed #Maybe too fast as the initial speed?
 
     """Copied from Graphics.py 1/03/2018"""
     # variables defined in other functions
@@ -97,16 +98,16 @@ if __name__ == "__main__":
         print(grid[i])
 
     from Graphics import initGraphics
-    wn, snakeDrawer, miscDrawer, textPrinter, scorePrinter, bonusObjDrawer = initGraphics()
+    wn, caterpillarDrawer, miscDrawer, textPrinter, scorePrinter, bonusObjDrawer = initGraphics()
     """Copied from Graphics.py 1/03/2018"""
 
-    playerOneSnake = Snake(xSquares,ySquares,snakeDrawer,miscDrawer, scorePrinter, bonusObjDrawer, grid) #grid as parameter is temporary
+    playerOneCaterpillar = Caterpillar(xSquares,ySquares,caterpillarDrawer,miscDrawer, scorePrinter, bonusObjDrawer, grid) #grid as parameter is temporary
     wn.update()
-    wn.onkeypress(playerOneSnake.upKeyHandler,"Up")
-    wn.onkeypress(playerOneSnake.downKeyHandler,"Down")
-    wn.onkeypress(playerOneSnake.leftKeyHandler,"Left")
-    wn.onkeypress(playerOneSnake.rightKeyHandler,"Right")
-    #Note: the snake can't "turn" in the direct opposite direction
+    wn.onkeypress(playerOneCaterpillar.upKeyHandler,"Up")
+    wn.onkeypress(playerOneCaterpillar.downKeyHandler,"Down")
+    wn.onkeypress(playerOneCaterpillar.leftKeyHandler,"Left")
+    wn.onkeypress(playerOneCaterpillar.rightKeyHandler,"Right")
+    #Note: the caterpillar can't "turn" in the direct opposite direction
     #of the last headDirection, ie if initial default headDirection was "left",
     #key presses of "right" will be ignored
     #Also, only the "first" key press per "turn" will be recorded
@@ -129,17 +130,23 @@ if __name__ == "__main__":
             #out1=currentTime - previousTime
             previousTime = currentTime #start countdown from beginning of loop
         
-            print("game loop {0}".format(count))
-            gameSpeed += 0.01 # make the snake speed up gradually :)
+            #print("game loop {0}".format(count))
+            gameSpeed += 0.03 # make the caterpillar speed up gradually :)
+            """ Alternative speeding up method
+            if loopsSinceLastSpeedIncrease > 20:
+                gameSpeed += 0.2
+                loopsSinceLastSpeedIncrease = 0
+            """
             wn.update() #apparently needed to listen to key presses
-            isDead = playerOneSnake.processFrame()
+            isDead = playerOneCaterpillar.processFrame()
             wn.update()
-            count += 1
+            loopCount += 1
+            loopsSinceLastSpeedIncrease += 1
                    
             #previousTime = currentTime #start countdown from end of loop?
 
     #Game over code
     miscDrawer.setpos(300, 200) # where the center of the text is
     miscDrawer.write("GAME OVER", True, align="center", font=("Arial", 48, "bold"))
-    print("Your Snake is Dead! :(") # gameover message
+    print("Your Caterpillar is Dead! :(") # gameover message
     wn.mainloop() #Put this line here???
