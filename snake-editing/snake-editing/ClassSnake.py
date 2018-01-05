@@ -2,7 +2,7 @@
 
 import turtle
 import random
-
+import winsound
 class BonusObj:
     """Class for Bonus objects that affect a snake's
         properLength, points, etc."""
@@ -34,6 +34,10 @@ class BonusObj:
         self.lifetime -= 1
         if snakeHeadPositionTuple == self.positionTuple:
             self.earned = True
+            # makes a high-pitched beep when the snake gets the object
+            winsound.Beep(1000, 200) # winsound.Beep takes two parameters: frequency(in Hz), duration (in milleseconds)
+            # see https://docs.python.org/3/library/winsound.html
+
             return self.destroy()
         if self.lifetime == 0: #if BonusObj's lifetime is up
             return self.destroy()
@@ -263,7 +267,13 @@ class Snake:
     def processFrame(self):
         """The main game loop should call this method once each loop.
             This method updates internal variables and the screen display"""
+
+        # makes a low-pitched beep every time the snake moves
+        winsound.Beep(600, 100) # winsound.Beep takes two parameters: frequency(in Hz), duration (in milleseconds)
+        # see https://docs.python.org/3/library/winsound.html
+
         isDead = self.moveSnake(self.headDirection, self.lastDirection)
+        
         self.determineBonusSpawn()
         self.headDirectionSet = False
         if isDead == True:            
