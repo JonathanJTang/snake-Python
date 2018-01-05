@@ -50,6 +50,11 @@ def initGraphics():
     scorePrinter.penup() #This should be the default state of the turtle
     scorePrinter.hideturtle() #This should be the default state of the turtle
 
+    bonusObjDrawer = turtle.Turtle() # will draw bonus object on the screen
+    bonusObjDrawer.speed(0)
+    bonusObjDrawer.penup() #This should be the default state of the turtle
+    bonusObjDrawer.hideturtle() #This should be the default state of the turtle
+
     #drawBackground
     #miscDrawer.setposition(?)
 
@@ -59,6 +64,10 @@ def initGraphics():
     wn.register_shape("snake-head-40px-3.gif") # snake head - down
     wn.register_shape("snake-head-40px-4.gif") # snake head - right
     wn.register_shape("snake-body-40px.gif") # snake body - plain green circle
+    wn.register_shape("leaf-green-40px.gif") # Bonus object - green leaf (from Khan Academy)
+    wn.register_shape("apple-40px.gif") # Bonus object - apple (good cuz it has transparent background)
+    wn.register_shape("apple-2-40px.gif") # Bonus object - alternative apple (not good cuz it has white background)
+    
 
     ### For testing purposes (temporary) ###
     snakeDrawer.shape("snake-body-40px.gif")
@@ -81,10 +90,10 @@ def initGraphics():
     """Note to Joseph: see below. Pls delete this comment when you've seen this"""
     wn.update() #Use this method to display the updated screen after drawing with turtle
 
-    return wn, snakeDrawer, miscDrawer, textPrinter, scorePrinter # returns window & two turtles
+    return wn, snakeDrawer, miscDrawer, textPrinter, scorePrinter, bonusObjDrawer # returns window & two turtles
 
-# runs initGraphics() and creates global variables wn, snakeDrawer, and miscDrawer
-wn, snakeDrawer, miscDrawer, textPrinter, scorePrinter = initGraphics()
+# runs initGraphics() and creates global variables wn, snakeDrawer, miscDrawer, and bonusObjDrawer
+wn, snakeDrawer, miscDrawer, textPrinter, scorePrinter, bonusObjDrawer = initGraphics()
 
 
 # Build grid, which matches coordinates in the virtual grid with turtle coordinates used to display objects

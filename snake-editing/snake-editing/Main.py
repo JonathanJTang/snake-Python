@@ -69,7 +69,7 @@ if __name__ == "__main__":
     #Initialize variables
     isDead = False
     count = 0
-    gameSpeed = 1
+    gameSpeed = 2
     loopInterval = 1/gameSpeed #Maybe too fast?
 
     """Copied from Graphics.py 1/03/2018"""
@@ -97,10 +97,10 @@ if __name__ == "__main__":
         print(grid[i])
 
     from Graphics import initGraphics
-    wn, snakeDrawer, miscDrawer, textPrinter, scorePrinter = initGraphics()
+    wn, snakeDrawer, miscDrawer, textPrinter, scorePrinter, bonusObjDrawer = initGraphics()
     """Copied from Graphics.py 1/03/2018"""
 
-    playerOneSnake = Snake(xSquares,ySquares,snakeDrawer,miscDrawer, scorePrinter, grid) #grid as parameter is temporary
+    playerOneSnake = Snake(xSquares,ySquares,snakeDrawer,miscDrawer, scorePrinter, bonusObjDrawer, grid) #grid as parameter is temporary
     wn.update()
     wn.onkeypress(playerOneSnake.upKeyHandler,"Up")
     wn.onkeypress(playerOneSnake.downKeyHandler,"Down")
@@ -121,7 +121,7 @@ if __name__ == "__main__":
 
     while isDead != True:
         
-        currentTime = time.perf_counter()-pauseElapsed
+        currentTime = time.perf_counter()-pauseElapsed # "-pauseElapsed" added to solve pause lag issue
                
         wn.update() # in order to listen to key presses
         while currentTime - previousTime >= loopInterval and pauseGame == False:
@@ -130,6 +130,7 @@ if __name__ == "__main__":
             previousTime = currentTime #start countdown from beginning of loop
         
             print("game loop {0}".format(count))
+            gameSpeed += 0.01 # make the snake speed up gradually :)
             wn.update() #apparently needed to listen to key presses
             isDead = playerOneSnake.processFrame()
             wn.update()

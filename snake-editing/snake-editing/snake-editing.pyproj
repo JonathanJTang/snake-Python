@@ -36,6 +36,9 @@
     <Compile Include="Test.py" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="apple-2-40px.gif" />
+    <Content Include="apple-40px.gif" />
+    <Content Include="leaf-green-40px.gif" />
     <Content Include="Maple_small.gif" />
     <Content Include="snake-body-40px.gif" />
     <Content Include="snake-head-40px-1.gif" />

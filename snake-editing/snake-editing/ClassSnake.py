@@ -6,17 +6,22 @@ import random
 class BonusObj:
     """Class for Bonus objects that affect a snake's
         properLength, points, etc."""
-    turtleShape = {"apple":"apple.jpeg"}
+    
     
     '''ISSUE:  Add a class attribute that describes all the parameters for a BonusObj type?'''
 
-    def __init__(turtleObj,bonusTypeStr,positionTuple,lifetime,pointsValue,snakeLengthChange):
+    def __init__(self,turtleObj,bonusTypeStr,gridX, gridY,lifetime,pointsValue,snakeLengthChange, gridList):
         """Initializes variables for a BonusObj instance. See comments
             in method for explanation of parameters"""
         #Make pointsValue linked to bonusTypeStr?
-        self.positionTuple = positionTuple #The BonusObj's position in the virtual grid
-        turtleObj.setpos(positionTuple) #Assumes turtleObj already has penup() and speed 0
-        self.stampID = turtleObj.stamp() #screen.update() will be done elsewhere
+        turtleShape = {"apple":"apple-40px.gif",
+                       "apple2":"apple-2-40px.gif",
+                   "leaf":"leaf-green-40px.gif"}
+        self.turtleObj = turtleObj
+        self.positionTuple = (gridX, gridY) #The BonusObj's position in the virtual grid ALTHOUGH not used in drawing the object
+        self.turtleObj.shape(turtleShape[bonusTypeStr])
+        self.turtleObj.setpos(gridList[gridY][gridX]) #Assumes turtleObj already has penup() and speed 0
+        self.stampID = self.turtleObj.stamp() #screen.update() will be done elsewhere
         self.pointsValue = pointsValue #The number of points the player will get; could be negative
         self.snakeLengthChange = snakeLengthChange
         self.earned = False #If the player has earned the BonusObj
@@ -36,14 +41,14 @@ class BonusObj:
 
     def destroy(self):
         """Removes BonusObj from screen, processes points change"""
-        turtleObj.clearstamp(self.stampID)
+        self.turtleObj.clearstamp(self.stampID)
         if self.earned == True:
             return self.pointsValue, self.snakeLengthChange
         else:
             return 0,0 #Potential future feature: a penalty for not getting the bonus?
 
 class Snake:
-    def __init__(self,xSquares,ySquares,snakeDrawer,miscDrawer,scorePrinter, grid,obstaclePositionTuples=[]):
+    def __init__(self,xSquares,ySquares,snakeDrawer,miscDrawer,scorePrinter, bonusObjDrawer, grid,obstaclePositionTuples=[]):
         #grid as parameter is temporary
         """Initialize variables for a Snake instance.
             snakeDrawer and miscDrawer are turtle.Turtle() objects.
@@ -57,6 +62,7 @@ class Snake:
         self.snakeDrawer = snakeDrawer
         self.miscDrawer = miscDrawer
         self.scorePrinter = scorePrinter
+        self.bonusObjDrawer = bonusObjDrawer
 
         self.headDirection = "left"
         self.lastDirection = "left"
@@ -139,16 +145,14 @@ class Snake:
             stampID = self.snakeDrawer.stamp()            
             self.stampIDList.append(stampID)
 
-            # only if the snake just turned
-            if newHeadDirection != lastHeadDirection:
-                # try to overwrite previous "heads"
-                self.snakeDrawer.shape("snake-body-40px.gif")
-                self.snakeDrawer.setpos(self.grid[lastHeadY][lastHeadX])
-                overwriteStampID = self.snakeDrawer.stamp()
-                # clear the stamp whose ID is the second-to-last value of StampIDLIst, i.e. the body after the haed
-                self.snakeDrawer.clearstamp(self.stampIDList[len(self.stampIDList)-2])
-                # overwrite the stamp ID of the previous "head"
-                self.stampIDList[len(self.stampIDList)-2] = overwriteStampID
+            # try to overwrite previous "heads"
+            self.snakeDrawer.shape("snake-body-40px.gif")
+            self.snakeDrawer.setpos(self.grid[lastHeadY][lastHeadX])
+            overwriteStampID = self.snakeDrawer.stamp()
+            # clear the stamp whose ID is the second-to-last value of StampIDLIst, i.e. the body after the haed
+            self.snakeDrawer.clearstamp(self.stampIDList[len(self.stampIDList)-2])
+            # overwrite the stamp ID of the previous "head"
+            self.stampIDList[len(self.stampIDList)-2] = overwriteStampID
 
         #Remove tail unit of snake, if necessary
         if len(self.posList) > self.properLength:
@@ -179,13 +183,13 @@ class Snake:
         self.currentScore += 1
         #Points for bonus object, if any
         if self.bonusObjOnScreen != None:
-            bonusPoints, snakeLengthChange = self.bonusObjOnScreen.update()
+            bonusPoints, snakeLengthChange = self.bonusObjOnScreen.update(self.posList[len(self.posList)-1], self.currentScore)
             if bonusPoints != None:
                 if bonusPoints == 0: #BonusObj destroyed, but player didn't get it
                     self.bonusObjOnScreen = None
                 else:
                     self.currentScore += bonusPoints
-                    self.length += snakeLengthChange
+                    self.properLength += snakeLengthChange
                     self.bonusObjOnScreen = None
 
         #Display updated score
@@ -214,15 +218,15 @@ class Snake:
                         x = randNumGenerator.randint(0,self.xLimit)
                         y = randNumGenerator.randint(0,self.yLimit)
                         if (x,y) not in self.posList: #bonusObj cannot spawn on a space the snake occupies,
-                            break; #only break if (x,y) is not a space the snake is on
-                    self.bonusObjOnScreen = BonusObj("apple",(x,y),10,10,2) #parameters need to be confirmed
+                            break #only break if (x,y) is not a space the snake is on
+                    self.bonusObjOnScreen = BonusObj(self.bonusObjDrawer,"apple",x,y,10,10,1, self.grid) #parameters need to be confirmed
                     self.turnsSinceLastBonus = 0
     
     def upKeyHandler(self):
         """Will be called whenever key 'up' is pressed"""
         print("up key pressed") #For debugging
         #Only the first valid key press will be accepted        
-        if self.headDirectionSet is False and self.lastDirection != "up": 
+        if self.headDirectionSet is False: 
             # And it cannot turn "up" when it's already going up (to remove bugs in the graphics part)
             if self.headDirection != "down" and self.headDirection != "up": #last headDirection cannot be "down"
                 self.lastDirection = self.headDirection
@@ -260,6 +264,7 @@ class Snake:
         """The main game loop should call this method once each loop.
             This method updates internal variables and the screen display"""
         isDead = self.moveSnake(self.headDirection, self.lastDirection)
+        self.determineBonusSpawn()
         self.headDirectionSet = False
         if isDead == True:            
             return True #ie isDead = True
