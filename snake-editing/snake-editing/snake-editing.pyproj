@@ -38,6 +38,8 @@
   <ItemGroup>
     <Content Include="apple-2-40px.gif" />
     <Content Include="apple-40px.gif" />
+    <Content Include="battle-spell.wav" />
+    <Content Include="hit-whack.wav" />
     <Content Include="leaf-green-40px.gif" />
     <Content Include="Maple_small.gif" />
     <Content Include="snake-body-40px.gif" />
@@ -52,6 +54,10 @@
     <Content Include="snake-head-40px-2.gif" />
     <Content Include="snake-head-40px-3.gif" />
     <Content Include="snake-head-40px-4.gif" />
+    <Content Include="snake-head-dead-1.gif" />
+    <Content Include="snake-head-dead-2.gif" />
+    <Content Include="snake-head-dead-3.gif" />
+    <Content Include="snake-head-dead-4.gif" />
     <Content Include="snake-tail-1.gif" />
     <Content Include="snake-tail-2.gif" />
     <Content Include="snake-tail-3.gif" />

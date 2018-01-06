@@ -9,6 +9,8 @@ import turtle
 import time
 from ClassCaterpillar import *
 
+
+
 pauseGame = False
 '''
 firstTime = True
@@ -110,10 +112,16 @@ def initGraphics(screenWidth, screenHeight):
     #miscDrawer.setposition(?)
 
     #Register images used so they can be used in turtle
-    wn.register_shape("snake-head-1-thinner.gif") # caterpillar head - up - green circle with two eyes - 40 px in diameter
+    wn.register_shape("snake-head-1-thinner.gif") # caterpillar head - up - green circle with two black eyes
     wn.register_shape("snake-head-2-thinner.gif") # caterpillar head - left
     wn.register_shape("snake-head-3-thinner.gif") # caterpillar head - down
     wn.register_shape("snake-head-4-thinner.gif") # caterpillar head - right
+
+    wn.register_shape("snake-head-dead-1.gif") # dead caterpillar head - up - green circle with two red crosses
+    wn.register_shape("snake-head-dead-2.gif") # dead caterpillar head - left
+    wn.register_shape("snake-head-dead-3.gif") # dead caterpillar head - down
+    wn.register_shape("snake-head-dead-4.gif") # dead caterpillar head - right   
+     
     wn.register_shape("snake-body-40px.gif") # caterpillar body - plain green circle
     wn.register_shape("snake-body-v-thinner.gif") # caterpillar body - vertical
     wn.register_shape("snake-body-h-thinner.gif") # caterpillar body - horizontal
@@ -235,6 +243,44 @@ def oneGame():
     miscDrawer.setpos(300, 200) # where the center of the text is
     miscDrawer.write("GAME OVER", True, align="center", font=("Arial", 48, "bold"))
     print("Your Caterpillar is Dead! :(") # gameover message
+    
+    # play wah-wah-wahhhh gameover sound
+    # 2 options: with simpleaudio (& numpy) OR with winsound
+    if numpyInstalled: 
+        # calculate note frequencies
+        A_freq = 440
+        Bb_freq = A_freq * 2 ** (1 / 12) # <-- formula is pretty handy!
+        B_freq = A_freq * 2 ** (2 / 12)
+        # get timesteps for each sample, T is note duration in seconds
+        sample_rate = 44100
+
+        T = 0.5 # 0.5 sec for B and Bb notes
+        t = np.linspace(0, T, T * sample_rate, False)
+           
+        Bb_note = np.sin(Bb_freq * t * 2 * np.pi)# generate sine wave notes     
+        B_note = np.sin(B_freq * t * 2 * np.pi)# generate sine wave notes     
+
+        T = 2 # 2 seconds for A note
+        t = np.linspace(0, T, T * sample_rate, False)
+        A_note = np.sin(A_freq * t * 2 * np.pi)# generate sine wave notes     
+        # concatenate notes
+        audio = np.hstack((B_note, Bb_note, A_note))
+        # normalize to 16-bit range
+        audio *= 32767 / np.max(np.abs(audio))
+        # convert to 16-bit data
+        audio = audio.astype(np.int16)
+        # start playback
+        play_obj = sa.play_buffer(audio, 1, 2, sample_rate)
+
+    elif winsoundInstalled:
+        # wah-wah-wahhhh sound A-->Ab-->G
+        winsound.Beep(440, 700) # winsound.Beep takes two parameters: frequency(in Hz), duration (in milleseconds)
+        winsound.Beep(415, 700)
+        winsound.Beep(392, 1500)
+        '''# alternative wah-wah-wahhhh sound C-->Bb-->B
+        winsound.Beep(523, 700) # winsound.Beep takes two parameters: frequency(in Hz), duration (in milleseconds)
+        winsound.Beep(494, 700)
+        winsound.Beep(466, 1500)'''
 
     return True #i.e. exitProgram = True
 

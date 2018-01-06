@@ -2,9 +2,13 @@
 
 import turtle
 import random
-
+try:
+    import simpleaudio as sa
+except:
+    pass
 """To Joseph: Check out module simpleaudio? It appears to be supported on all operating systems.
-http://simpleaudio.readthedocs.io/en/latest/capabilities.html OK. -Joseph """
+http://simpleaudio.readthedocs.io/en/latest/capabilities.html 
+OK, already installed simpleaudio through "pip3 install simpleaudio" command in command prompt. -Joseph """
 try:
     import winsound #Only available on windows devices
     # see https://docs.python.org/3/library/winsound.html
@@ -12,8 +16,32 @@ try:
 except: #on Macs there will be ImportError
     #print("Module winsound not installed on device. All game sounds will be disabled")
     winsoundInstalled = False
+try:
+    import numpy as np
+    numpyInstalled = True
+    # calculate note frequencies
+    A_freq = 440
+    Csh_freq = A_freq * 2 ** (4 / 12)
+    E_freq = A_freq * 2 ** (7 / 12)
+    # get timesteps for each sample, T is note duration in seconds
+    sample_rate = 44100
+    T = 0.25
+    t = np.linspace(0, T, T * sample_rate, False)
+    # generate sine wave notes
+    A_note = np.sin(A_freq * t * 2 * np.pi)
+    Csh_note = np.sin(Csh_freq * t * 2 * np.pi)
+    E_note = np.sin(E_freq * t * 2 * np.pi)
+    # concatenate notes
+    audio = np.hstack((A_note, Csh_note, E_note))
+    # normalize to 16-bit range
+    audio *= 32767 / np.max(np.abs(audio))
+    # convert to 16-bit data
+    audio = audio.astype(np.int16)
+    # start playback
+    play_obj = sa.play_buffer(audio, 1, 2, sample_rate)
 
-
+except:
+    numpyInstalled = False
 
 class BonusObj:
     """Class for Bonus objects that affect a caterpillar's
@@ -86,6 +114,10 @@ class Caterpillar:
                 "down": "snake-tail-3-thinner.gif",
                 "left": "snake-tail-2-thinner.gif",
                 "right": "snake-tail-4-thinner.gif"}
+    deadHeadShape = {"up": "snake-head-dead-1.gif",
+                "down": "snake-head-dead-3.gif",
+                "left": "snake-head-dead-2.gif",
+                "right": "snake-head-dead-4.gif"}
 
     def __init__(self,xSquares,ySquares,caterpillarDrawer,miscDrawer,textPrinter,scorePrinter, bonusObjDrawer, grid,obstaclePositionTuples=[]):
         #grid as parameter is temporary
@@ -183,7 +215,16 @@ class Caterpillar:
 
         #Determine if the caterpillar has run into anything that would kill it
         if self.hasCollision(self.posList[-1]):
-            """Special graphics, e.g. stunned/dead caterpillar head???"""
+            """Special graphics, e.g. stunned/dead caterpillar head???"""            
+            self.caterpillarDrawer.clearstamp(self.stampIDList[-1])   # erase alive head
+
+            # the next two lines use "previousHeadDirection" and "lastHeadX & Y" 
+            # because
+            self.caterpillarDrawer.shape(self.deadHeadShape[previousHeadDirection])
+            self.caterpillarDrawer.setpos(self.grid[lastHeadY][lastHeadX])           
+            stampID = self.caterpillarDrawer.stamp()
+            stampID = self.stampIDList[-1]
+            
             return True #ie isDead = True
         else:
             #Stamp new head
