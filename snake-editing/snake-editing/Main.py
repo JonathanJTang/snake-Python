@@ -65,7 +65,75 @@ def pauseGameHandler():
         textPrinter.setpos(300, 200) # where the center of the text is
         textPrinter.write("GAME PAUSED", True, align="center", font=("Arial", 48, "normal"))
 
-if __name__ == "__main__":
+
+def initGraphics(screenWidth, screenHeight):
+    '''Initializes graphics for the game. Run only once.
+        '''
+    #Set up the screen object
+    wn = turtle.Screen()
+    wn.setup(screenWidth, screenHeight)
+    #Bottom left corner (0,screenHeight), top right corner (screenWidth,0)
+    #to make javascript-like coordinate system with (0,0) in the top left corner
+    wn.setworldcoordinates(0, screenHeight, screenWidth, 0)
+    #"""temporarily commented for easier debugging"""
+    wn.tracer(0, delay=1) #Turn turtle animation off (only each 0th screen update is performed)
+    wn.title("Caterpillar: Game 1") #Include current score in title?
+    wn.colormode(255)
+
+    #Set up the turtle objects
+    caterpillarDrawer = turtle.Turtle() #will draw the caterpillar
+    caterpillarDrawer.speed(0)
+    caterpillarDrawer.penup() #This should be the default state of the turtle
+    caterpillarDrawer.hideturtle() #This should be the default state of the turtle
+
+    miscDrawer = turtle.Turtle() #will draw miscellaneous stuff: borders, scores, etc
+    miscDrawer.speed(0)
+    miscDrawer.penup() #This should be the default state of the turtle
+    miscDrawer.hideturtle() #This should be the default state of the turtle
+    
+    textPrinter = turtle.Turtle() # will print text on screen when needed
+    textPrinter.speed(0)
+    textPrinter.penup() #This should be the default state of the turtle
+    textPrinter.hideturtle() #This should be the default state of the turtle
+
+    scorePrinter = turtle.Turtle() # will print the score on the screen
+    scorePrinter.speed(0)
+    scorePrinter.penup() #This should be the default state of the turtle
+    scorePrinter.hideturtle() #This should be the default state of the turtle
+
+    bonusObjDrawer = turtle.Turtle() # will draw bonus object on the screen
+    bonusObjDrawer.speed(0)
+    bonusObjDrawer.penup() #This should be the default state of the turtle
+    bonusObjDrawer.hideturtle() #This should be the default state of the turtle
+
+    #drawBackground
+    #miscDrawer.setposition(?)
+
+    #Register images used so they can be used in turtle
+    wn.register_shape("snake-head-40px-1.gif") # caterpillar head - up - green circle with two eyes - 40 px in diameter
+    wn.register_shape("snake-head-40px-2.gif") # caterpillar head - left
+    wn.register_shape("snake-head-40px-3.gif") # caterpillar head - down
+    wn.register_shape("snake-head-40px-4.gif") # caterpillar head - right
+    wn.register_shape("snake-body-40px.gif") # caterpillar body - plain green circle
+    wn.register_shape("snake-body-v.gif") # caterpillar body - vertical
+    wn.register_shape("snake-body-h.gif") # caterpillar body - horizontal
+   # caterpillar curve
+    wn.register_shape("snake-tail-1.gif") # caterpillar tail - pointing up
+    wn.register_shape("snake-tail-2.gif") # caterpillar tail - pointing left
+    wn.register_shape("snake-tail-3.gif") # caterpillar tail - pointing down
+    wn.register_shape("snake-tail-4.gif") # caterpillar tail - pointing right
+    wn.register_shape("leaf-green-40px.gif") # Bonus object - green leaf (from Khan Academy)
+    wn.register_shape("apple-40px.gif") # Bonus object - apple (good cuz it has transparent background)
+    wn.register_shape("apple-2-40px.gif") # Bonus object - alternative apple (not good cuz it has white background)
+
+
+    """Note to Joseph: see below. Pls delete this comment when you've seen this"""
+    wn.update() #Use this method to display the updated screen after drawing with turtle
+
+    return wn, caterpillarDrawer, miscDrawer, textPrinter, scorePrinter, bonusObjDrawer # returns screen & turtles
+
+
+def oneGame():
     #Initialize variables
     isDead = False
     loopCount = 0
@@ -73,8 +141,6 @@ if __name__ == "__main__":
     gameSpeed = 1
     loopInterval = 1/gameSpeed #Maybe too fast as the initial speed?
 
-    """Copied from Graphics.py 1/03/2018"""
-    # variables defined in other functions
     #Variables potentially set by user
     xSquares = 15 #number of virtual squares in a row
     ySquares = 10 #number of virtual squares in a column
@@ -87,6 +153,19 @@ if __name__ == "__main__":
     screenWidth = xSquares * gridSquareSideLength #integer, in pixels
     screenHeight = ySquares * gridSquareSideLength #integer, in pixels
 
+    wn, caterpillarDrawer, miscDrawer, textPrinter, scorePrinter, bonusObjDrawer = initGraphics(screenWidth,screenHeight)
+
+    #Draw boundaries of game board
+    miscDrawer.pensize(3)
+    miscDrawer.setpos(0, 0)#top-left corner again
+    miscDrawer.pendown()
+    miscDrawer.setpos(0, gridSquareSideLength*ySquares) #bottom-left corner
+    miscDrawer.setpos(gridSquareSideLength*xSquares, gridSquareSideLength*ySquares) #bottom-right corner
+    miscDrawer.setpos(gridSquareSideLength*xSquares, 0) #top-right corner
+    miscDrawer.setpos(0, 0)#top-left corner again
+    miscDrawer.penup()
+    miscDrawer.pensize(1)
+
     # Build grid, which matches coordinates in the virtual grid with turtle coordinates used to display objects
     grid = []
     for y in range(ySquares): #traverse rows
@@ -94,12 +173,8 @@ if __name__ == "__main__":
         for x in range(xSquares): #traverse columns
             grid[y].append((gridSquareSideLength//2 + gridSquareSideLength*x, gridSquareSideLength//2 + gridSquareSideLength*y))
 
-    for i in range(ySquares): #For debugging
-        print(grid[i])
-
-    from Graphics import initGraphics
-    wn, caterpillarDrawer, miscDrawer, textPrinter, scorePrinter, bonusObjDrawer = initGraphics()
-    """Copied from Graphics.py 1/03/2018"""
+    '''for i in range(ySquares): #For debugging
+        print(grid[i])'''
 
     playerOneCaterpillar = Caterpillar(xSquares,ySquares,caterpillarDrawer,miscDrawer, scorePrinter, bonusObjDrawer, grid) #grid as parameter is temporary
     wn.update()
@@ -131,7 +206,7 @@ if __name__ == "__main__":
             previousTime = currentTime #start countdown from beginning of loop
         
             #print("game loop {0}".format(count))
-            gameSpeed += 0.03 # make the caterpillar speed up gradually :)
+            gameSpeed += 0.02 # make the caterpillar speed up gradually :)
             loopInterval = 1/gameSpeed
             """ Alternative speeding up method
             if loopsSinceLastSpeedIncrease > 20:
@@ -150,4 +225,13 @@ if __name__ == "__main__":
     miscDrawer.setpos(300, 200) # where the center of the text is
     miscDrawer.write("GAME OVER", True, align="center", font=("Arial", 48, "bold"))
     print("Your Caterpillar is Dead! :(") # gameover message
-    wn.mainloop() #Put this line here???
+
+    return True #i.e. exitProgram = True
+
+
+if __name__ == "__main__":
+    exitProgram = False
+    while (exitProgram != True):
+        exitProgram = oneGame()
+    time.sleep(2)
+    wn.bye() #Closes turtle window

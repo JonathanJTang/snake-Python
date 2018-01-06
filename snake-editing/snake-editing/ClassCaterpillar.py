@@ -72,9 +72,9 @@ class Caterpillar:
                     "left": "right",
                     "right": "left"}
     headShape = {"up": "snake-head-40px-1.gif",
-                      "down": "snake-head-40px-3.gif",
-                      "left": "snake-head-40px-2.gif",
-                      "right": "snake-head-40px-4.gif"}
+                "down": "snake-head-40px-3.gif",
+                "left": "snake-head-40px-2.gif",
+                "right": "snake-head-40px-4.gif"}
     bodyShape = {"vertical": "snake-body-v.gif",
                  "horizontal": "snake-body-h.gif",
                  "curveUpRight": "", #Add here
@@ -82,6 +82,10 @@ class Caterpillar:
                  "curveDownRight": "", #Add here
                  "curveDownLeft": "", #Add here
                  "oldGeneric": "snake-body-40px.gif"} #Eventually delete this entry
+    tailShape = {"up": "snake-tail-1.gif",
+                "down": "snake-tail-3.gif",
+                "left": "snake-tail-2.gif",
+                "right": "snake-tail-4.gif"}
 
     def __init__(self,xSquares,ySquares,caterpillarDrawer,miscDrawer,scorePrinter, bonusObjDrawer, grid,obstaclePositionTuples=[]):
         #grid as parameter is temporary
@@ -131,12 +135,14 @@ class Caterpillar:
         #potentially affect the game score
 
         #Set up initial graphics for the caterpillar object
-        self.caterpillarDrawer.shape(self.bodyShape["horizontal"])
+        """NOTE: there should be a better way to do this"""
         for i in range(-2,-2+self.properLength):
             self.posList.append((xSquares//2-i,ySquares//2))
             self.caterpillarDrawer.setpos(self.grid[ySquares//2][xSquares//2-i])
+            self.caterpillarDrawer.shape(self.bodyShape["horizontal"])
+            if i == -2: #Switch image for caterpillar tail
+                self.caterpillarDrawer.shape(self.tailShape["right"])
             if i == 2: #Switch image for caterpillar head
-                """NOTE: there should be a better way to do this"""
                 self.caterpillarDrawer.shape(self.headShape[self.currentHeadDirection])
             stampID = self.caterpillarDrawer.stamp()
             self.stampIDList.append(stampID)
@@ -153,9 +159,10 @@ class Caterpillar:
         newHeadDirection = self.currentHeadDirection
         previousHeadDirection = self.lastHeadDirection
 
+        ''' For debugging
         print("newHeadDirection is", newHeadDirection)
         print("previousHeadDirection is", previousHeadDirection)
-        print()
+        print()'''
 
         #Find and record new headPosTuple of caterpillar
         lastHeadX, lastHeadY = self.posList[len(self.posList)-1]
@@ -195,9 +202,9 @@ class Caterpillar:
                 or (previousHeadDirection == "down" and newHeadDirection == "up") \
                 or (previousHeadDirection == "down" and newHeadDirection == "down"):
                 bodyShapeType = "vertical"
-            else:
+            else: #Delete this after all curve images have been added
                 bodyShapeType = "oldGeneric"
-            '''
+            ''' Uncomment this section after all curve images have been added
             elif (previousHeadDirection == "up" and newHeadDirection == "right") \
                 or (previousHeadDirection == "right" and newHeadDirection == "up"):
                 bodyShapeType = "curveUpRight"
@@ -214,19 +221,42 @@ class Caterpillar:
             
             self.caterpillarDrawer.shape(self.bodyShape[bodyShapeType])
             self.caterpillarDrawer.setpos(self.grid[lastHeadY][lastHeadX])
-            overwriteStampID = self.caterpillarDrawer.stamp()
+            overwriteStampID = self.caterpillarDrawer.stamp() #stamp new body image
             #Remove the stamp whose ID is the second-to-last value of StampIDLIst, i.e. the body unit after the head
             self.caterpillarDrawer.clearstamp(self.stampIDList[len(self.stampIDList)-2])
             #Overwrite the stamp ID of the previous "head"
             self.stampIDList[len(self.stampIDList)-2] = overwriteStampID
 
-        #Remove tail units of caterpillar if necessary and put in new tail image
-        """Update last body image to tail image around this part of code"""
+        #Remove tail unit of caterpillar if necessary
         if len(self.posList) > self.properLength:
             #Because of how the game loop is set up, the caterpillar can only be
             #at most 1 unit over its proper length
             self.posList.pop(0) #remove the tail unit of the caterpillar
             self.caterpillarDrawer.clearstamp(self.stampIDList.pop(0))
+
+        #Put in new tail image
+        tailX, tailY = self.posList[0]
+        secondLastUnitX, secondLastUnitY = self.posList[1]
+        #4 possibilities: tailUnit is either to the left, right, up, or down of the secondLastUnit
+        if tailX == secondLastUnitX:
+            if tailY > secondLastUnitY:
+                tailShapeType = "down" #tail below secondLastUnit
+            else:
+                tailShapeType = "up" #tail above secondLastUnit
+        else: #means tailY == secondLastUnitY
+            if tailX > secondLastUnitX:
+                tailShapeType = "right" #tail right of secondLastUnit
+            else:
+                tailShapeType = "left" #tail left of secondLastUnit
+        self.caterpillarDrawer.shape(self.tailShape[tailShapeType])
+        self.caterpillarDrawer.setpos(self.grid[tailY][tailX])
+        overwriteStampID = self.caterpillarDrawer.stamp() #stamp new tail
+        #Remove the image of the previous "tail"
+        self.caterpillarDrawer.clearstamp(self.stampIDList[0])
+        #Overwrite the stamp ID of the previous "tail"
+        self.stampIDList[0] = overwriteStampID
+
+        self.currentHeadDirectionSet = False
         return False #i.e. isDead = False
 
     def hasCollision(self,headPosTuple):
@@ -336,7 +366,6 @@ class Caterpillar:
             winsound.Beep(600, 100) # winsound.Beep takes two parameters: frequency(in Hz), duration (in milleseconds)
 
         nowDead = self.moveCaterpillar()
-        self.currentHeadDirectionSet = False
         self.determineBonusSpawn()
         if nowDead == True:            
             return True #ie isDead = True
