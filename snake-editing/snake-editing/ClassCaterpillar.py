@@ -166,7 +166,7 @@ class Caterpillar:
         print()'''
 
         #Find and record new headPosTuple of caterpillar
-        lastHeadX, lastHeadY = self.posList[len(self.posList)-1]
+        lastHeadX, lastHeadY = self.posList[-1] # list[-1] gets the value of the last index
         if newHeadDirection == "left":
             newHeadX = lastHeadX-1
             newHeadY = lastHeadY
@@ -182,7 +182,7 @@ class Caterpillar:
         self.posList.append((newHeadX,newHeadY))
 
         #Determine if the caterpillar has run into anything that would kill it
-        if self.hasCollision(self.posList[len(self.posList)-1]):
+        if self.hasCollision(self.posList[-1]):
             """Special graphics, e.g. stunned/dead caterpillar head???"""
             return True #ie isDead = True
         else:
@@ -227,9 +227,9 @@ class Caterpillar:
             self.caterpillarDrawer.setpos(self.grid[lastHeadY][lastHeadX])
             overwriteStampID = self.caterpillarDrawer.stamp() #stamp new body image
             #Remove the stamp whose ID is the second-to-last value of StampIDLIst, i.e. the body unit after the head
-            self.caterpillarDrawer.clearstamp(self.stampIDList[len(self.stampIDList)-2])
+            self.caterpillarDrawer.clearstamp(self.stampIDList[-2]) # list[-2] is the second-to-last value in the list
             #Overwrite the stamp ID of the previous "head"
-            self.stampIDList[len(self.stampIDList)-2] = overwriteStampID
+            self.stampIDList[-2] = overwriteStampID
 
         #Remove tail unit of caterpillar if necessary
         if len(self.posList) > self.properLength:
@@ -272,7 +272,7 @@ class Caterpillar:
         if headX < 0 or headY < 0 or headX > self.xLimit or headY > self.yLimit:
             #The caterpillar ran into the borders
             return True
-        elif headPosTuple in self.posList[0:len(self.posList)-1]: #a slice from 0 to just before headPosTuple
+        elif headPosTuple in self.posList[0:-1]: #a slice from 0 to just before headPosTuple
             #The caterpillar ran into itself
             return True
         elif headPosTuple in self.obstaclePositionTuples:
@@ -288,7 +288,7 @@ class Caterpillar:
         self.currentScore += 1
         #Points for bonus object, if any
         if self.bonusObjOnScreen != None:
-            bonusPoints, caterpillarLengthChange = self.bonusObjOnScreen.update(self.posList[len(self.posList)-1])
+            bonusPoints, caterpillarLengthChange = self.bonusObjOnScreen.update(self.posList[-1])
             if bonusPoints != None:
                 if bonusPoints == 0: #BonusObj destroyed, but player didn't get it
                     self.bonusObjOnScreen = None
