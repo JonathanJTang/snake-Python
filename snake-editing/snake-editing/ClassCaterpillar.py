@@ -366,7 +366,7 @@ class Caterpillar:
                         y = randNumGenerator.randint(0,self.yLimit)
                         if (x,y) not in self.posList: #bonusObj cannot spawn on a space the caterpillar occupies,
                             break #only break if (x,y) is not a space the caterpillar is on
-                    self.bonusObjOnScreen = BonusObj(self.bonusObjDrawer,"apple",(x,y),self.grid[y][x],10,10,3)
+                    self.bonusObjOnScreen = BonusObj(self.bonusObjDrawer,"apple",(x,y),self.grid[y][x],16,10,3)
                     """parameters of BonusObj.__init__() need to be confirmed"""
     
     def processKeyPress(self,pressedKeyStr):
