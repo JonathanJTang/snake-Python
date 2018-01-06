@@ -43,6 +43,7 @@
     <Content Include="snake-body-40px.gif" />
     <Content Include="snake-body-h.gif" />
     <Content Include="snake-body-v.gif" />
+    <Content Include="snake-curve-up-right.gif" />
     <Content Include="snake-head-1.gif" />
     <Content Include="snake-head-2.gif" />
     <Content Include="snake-head-3.gif" />

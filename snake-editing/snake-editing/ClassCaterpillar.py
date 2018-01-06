@@ -4,7 +4,7 @@ import turtle
 import random
 
 """To Joseph: Check out module simpleaudio? It appears to be supported on all operating systems.
-http://simpleaudio.readthedocs.io/en/latest/capabilities.html"""
+http://simpleaudio.readthedocs.io/en/latest/capabilities.html OK. -Joseph """
 try:
     import winsound #Only available on windows devices
     # see https://docs.python.org/3/library/winsound.html
@@ -71,23 +71,23 @@ class Caterpillar:
                     "down": "up",
                     "left": "right",
                     "right": "left"}
-    headShape = {"up": "snake-head-40px-1.gif",
-                "down": "snake-head-40px-3.gif",
-                "left": "snake-head-40px-2.gif",
-                "right": "snake-head-40px-4.gif"}
-    bodyShape = {"vertical": "snake-body-v.gif",
-                 "horizontal": "snake-body-h.gif",
-                 "curveUpRight": "", #Add here
+    headShape = {"up": "snake-head-1-thinner.gif",
+                "down": "snake-head-3-thinner.gif",
+                "left": "snake-head-2-thinner.gif",
+                "right": "snake-head-4-thinner.gif"}
+    bodyShape = {"vertical": "snake-body-v-thinner.gif",
+                 "horizontal": "snake-body-h-thinner.gif",
+                 "curveUpRight": "snake-curve-up-right.gif", # curveUpRight = has straight line borders on up and right side of the body
                  "curveUpLeft": "", #Add here
                  "curveDownRight": "", #Add here
                  "curveDownLeft": "", #Add here
                  "oldGeneric": "snake-body-40px.gif"} #Eventually delete this entry
-    tailShape = {"up": "snake-tail-1.gif",
-                "down": "snake-tail-3.gif",
-                "left": "snake-tail-2.gif",
-                "right": "snake-tail-4.gif"}
+    tailShape = {"up": "snake-tail-1-thinner.gif",
+                "down": "snake-tail-3-thinner.gif",
+                "left": "snake-tail-2-thinner.gif",
+                "right": "snake-tail-4-thinner.gif"}
 
-    def __init__(self,xSquares,ySquares,caterpillarDrawer,miscDrawer,scorePrinter, bonusObjDrawer, grid,obstaclePositionTuples=[]):
+    def __init__(self,xSquares,ySquares,caterpillarDrawer,miscDrawer,textPrinter,scorePrinter, bonusObjDrawer, grid,obstaclePositionTuples=[]):
         #grid as parameter is temporary
         """Initialize variables for a Caterpillar instance.
             caterpillarDrawer and miscDrawer are turtle.Turtle() objects.
@@ -101,6 +101,7 @@ class Caterpillar:
         #Turtle objects; assumes they have already been set up with penup() and speed 0
         self.caterpillarDrawer = caterpillarDrawer
         self.miscDrawer = miscDrawer
+        self.textPrinter = textPrinter
         self.scorePrinter = scorePrinter
         self.bonusObjDrawer = bonusObjDrawer
 
@@ -202,21 +203,24 @@ class Caterpillar:
                 or (previousHeadDirection == "down" and newHeadDirection == "up") \
                 or (previousHeadDirection == "down" and newHeadDirection == "down"):
                 bodyShapeType = "vertical"
+            elif (previousHeadDirection == "down" and newHeadDirection == "right") \
+                or (previousHeadDirection == "left" and newHeadDirection == "up"):
+                bodyShapeType = "curveUpRight"
             else: #Delete this after all curve images have been added
                 bodyShapeType = "oldGeneric"
             ''' Uncomment this section after all curve images have been added
             elif (previousHeadDirection == "up" and newHeadDirection == "right") \
-                or (previousHeadDirection == "right" and newHeadDirection == "up"):
-                bodyShapeType = "curveUpRight"
-            elif (previousHeadDirection == "up" and newHeadDirection == "left") \
-                or (previousHeadDirection == "left" and newHeadDirection == "up"):
-                bodyShapeType = "curveUpLeft"
-            elif (previousHeadDirection == "down" and newHeadDirection == "right") \
-                or (previousHeadDirection == "right" and newHeadDirection == "down"):
-                bodyShapeType = "curveDownRight"
-            elif (previousHeadDirection == "down" and newHeadDirection == "left") \
                 or (previousHeadDirection == "left" and newHeadDirection == "down"):
+                bodyShapeType = "curveDownRight"
+            elif (previousHeadDirection == "up" and newHeadDirection == "left") \
+                or (previousHeadDirection == "right" and newHeadDirection == "down"):
                 bodyShapeType = "curveDownLeft"
+            elif (previousHeadDirection == "down" and newHeadDirection == "right") \
+                or (previousHeadDirection == "left" and newHeadDirection == "up"):
+                bodyShapeType = "curveUpRight"
+            elif (previousHeadDirection == "down" and newHeadDirection == "left") \
+                or (previousHeadDirection == "right" and newHeadDirection == "up"):
+                bodyShapeType = "curveUpLeft"
             '''
             
             self.caterpillarDrawer.shape(self.bodyShape[bodyShapeType])

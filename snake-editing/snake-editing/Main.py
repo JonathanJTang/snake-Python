@@ -110,18 +110,24 @@ def initGraphics(screenWidth, screenHeight):
     #miscDrawer.setposition(?)
 
     #Register images used so they can be used in turtle
-    wn.register_shape("snake-head-40px-1.gif") # caterpillar head - up - green circle with two eyes - 40 px in diameter
-    wn.register_shape("snake-head-40px-2.gif") # caterpillar head - left
-    wn.register_shape("snake-head-40px-3.gif") # caterpillar head - down
-    wn.register_shape("snake-head-40px-4.gif") # caterpillar head - right
+    wn.register_shape("snake-head-1-thinner.gif") # caterpillar head - up - green circle with two eyes - 40 px in diameter
+    wn.register_shape("snake-head-2-thinner.gif") # caterpillar head - left
+    wn.register_shape("snake-head-3-thinner.gif") # caterpillar head - down
+    wn.register_shape("snake-head-4-thinner.gif") # caterpillar head - right
     wn.register_shape("snake-body-40px.gif") # caterpillar body - plain green circle
-    wn.register_shape("snake-body-v.gif") # caterpillar body - vertical
-    wn.register_shape("snake-body-h.gif") # caterpillar body - horizontal
-   # caterpillar curve
+    wn.register_shape("snake-body-v-thinner.gif") # caterpillar body - vertical
+    wn.register_shape("snake-body-h-thinner.gif") # caterpillar body - horizontal
+    # caterpillar curve
+    wn.register_shape("snake-curve-up-right.gif")
+
     wn.register_shape("snake-tail-1.gif") # caterpillar tail - pointing up
     wn.register_shape("snake-tail-2.gif") # caterpillar tail - pointing left
     wn.register_shape("snake-tail-3.gif") # caterpillar tail - pointing down
     wn.register_shape("snake-tail-4.gif") # caterpillar tail - pointing right
+    wn.register_shape("snake-tail-1-thinner.gif") # caterpillar tail - pointing up
+    wn.register_shape("snake-tail-2-thinner.gif") # caterpillar tail - pointing left
+    wn.register_shape("snake-tail-3-thinner.gif") # caterpillar tail - pointing down
+    wn.register_shape("snake-tail-4-thinner.gif") # caterpillar tail - pointing right
     wn.register_shape("leaf-green-40px.gif") # Bonus object - green leaf (from Khan Academy)
     wn.register_shape("apple-40px.gif") # Bonus object - apple (good cuz it has transparent background)
     wn.register_shape("apple-2-40px.gif") # Bonus object - alternative apple (not good cuz it has white background)
@@ -176,7 +182,7 @@ def oneGame():
     '''for i in range(ySquares): #For debugging
         print(grid[i])'''
 
-    playerOneCaterpillar = Caterpillar(xSquares,ySquares,caterpillarDrawer,miscDrawer, scorePrinter, bonusObjDrawer, grid) #grid as parameter is temporary
+    playerOneCaterpillar = Caterpillar(xSquares,ySquares,caterpillarDrawer,miscDrawer, textPrinter, scorePrinter, bonusObjDrawer, grid) #grid as parameter is temporary
     wn.update()
     wn.onkeypress(playerOneCaterpillar.upKeyHandler,"Up")
     wn.onkeypress(playerOneCaterpillar.downKeyHandler,"Down")
@@ -234,4 +240,4 @@ if __name__ == "__main__":
     while (exitProgram != True):
         exitProgram = oneGame()
     time.sleep(2)
-    wn.bye() #Closes turtle window
+    #wn.bye() #Closes turtle window
