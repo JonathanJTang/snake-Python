@@ -12,6 +12,8 @@ from ClassCaterpillar import *
 
 
 pauseGame = False
+# variable to delete paused time from currentTime
+pauseElapsed = 0  
 '''
 firstTime = True
 '''
@@ -93,6 +95,7 @@ def initGraphics(screenWidth, screenHeight):
     miscDrawer.penup() #This should be the default state of the turtle
     miscDrawer.hideturtle() #This should be the default state of the turtle
     
+    global textPrinter 
     textPrinter = turtle.Turtle() # will print text on screen when needed
     textPrinter.speed(0)
     textPrinter.penup() #This should be the default state of the turtle
@@ -204,14 +207,14 @@ def oneGame():
     #of the last headDirection, ie if initial default headDirection was "left",
     #key presses of "right" will be ignored
     #Also, only the "first" key press per "turn" will be recorded
+     
     wn.onkeypress(pauseGameHandler,"space") #pause button functionality
     wn.listen()
 
     #Main game loop
     previousTime = time.perf_counter()
 
-    # variable to delete paused time from currentTime
-    pauseElapsed = 0   
+
 
     while isDead != True:
         
