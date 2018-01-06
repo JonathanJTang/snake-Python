@@ -185,9 +185,13 @@ def oneGame():
     playerOneCaterpillar = Caterpillar(xSquares,ySquares,caterpillarDrawer,miscDrawer, textPrinter, scorePrinter, bonusObjDrawer, grid) #grid as parameter is temporary
     wn.update()
     wn.onkeypress(playerOneCaterpillar.upKeyHandler,"Up")
+    wn.onkeypress(playerOneCaterpillar.upKeyHandler,"w")
     wn.onkeypress(playerOneCaterpillar.downKeyHandler,"Down")
+    wn.onkeypress(playerOneCaterpillar.downKeyHandler,"s")
     wn.onkeypress(playerOneCaterpillar.leftKeyHandler,"Left")
+    wn.onkeypress(playerOneCaterpillar.leftKeyHandler,"a")
     wn.onkeypress(playerOneCaterpillar.rightKeyHandler,"Right")
+    wn.onkeypress(playerOneCaterpillar.rightKeyHandler,"d")
     #Note: the caterpillar can't "turn" in the direct opposite direction
     #of the last headDirection, ie if initial default headDirection was "left",
     #key presses of "right" will be ignored
