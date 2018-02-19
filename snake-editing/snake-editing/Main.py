@@ -12,8 +12,6 @@ from ClassCaterpillar import *
 
 
 pauseGame = False
-# variable to delete paused time from currentTime
-pauseElapsed = 0  
 '''
 firstTime = True
 '''
@@ -21,7 +19,6 @@ def pauseGameHandler():
     """Called whenever the key for pause game is pressed"""
     print("space key pressed") #For debugging
     global pauseGame
-    global textPrinter
     global pauseElapsed # stores the total time paused (accumulates with every pause)
     global pauseGameStampIDlist
     '''global firstTime # not the best way, but it makes pauseTimerStart start only once - at the start of the pause
@@ -114,7 +111,6 @@ def initGraphics(screenWidth, screenHeight):
     miscDrawer.penup() #This should be the default state of the turtle
     miscDrawer.hideturtle() #This should be the default state of the turtle
     
-    global textPrinter 
     textPrinter = turtle.Turtle() # will print text on screen when needed
     textPrinter.speed(0)
     textPrinter.penup() #This should be the default state of the turtle
@@ -299,18 +295,18 @@ def oneGame():
 
     wn.update()
     wn.onkeypress(playerOneCaterpillar.upKeyHandler,"Up")
-    wn.onkeypress(playerOneCaterpillar.upKeyHandler,"w")
     wn.onkeypress(playerOneCaterpillar.downKeyHandler,"Down")
-    wn.onkeypress(playerOneCaterpillar.downKeyHandler,"s")
     wn.onkeypress(playerOneCaterpillar.leftKeyHandler,"Left")
-    wn.onkeypress(playerOneCaterpillar.leftKeyHandler,"a")
     wn.onkeypress(playerOneCaterpillar.rightKeyHandler,"Right")
-    wn.onkeypress(playerOneCaterpillar.rightKeyHandler,"d")
+    #Keys w,a,s,d reserved for player two
+    #wn.onkeypress(playerOneCaterpillar.upKeyHandler,"w")
+    #wn.onkeypress(playerOneCaterpillar.leftKeyHandler,"a")
+    #wn.onkeypress(playerOneCaterpillar.downKeyHandler,"s")
+    #wn.onkeypress(playerOneCaterpillar.rightKeyHandler,"d")
     #Note: the caterpillar can't "turn" in the direct opposite direction
     #of the last headDirection, ie if initial default headDirection was "left",
     #key presses of "right" will be ignored
-    #Also, only the "first" key press per "turn" will be recorded
-     
+    #Also, only the first valid key press per "turn" will be recorded
     wn.onkeypress(pauseGameHandler,"space") #pause button functionality
     wn.listen()
 
