@@ -23,12 +23,16 @@ def pauseGameHandler():
     global pauseGame
     global textPrinter
     global pauseElapsed # stores the total time paused (accumulates with every pause)
+    global pauseGameStampIDlist
     '''global firstTime # not the best way, but it makes pauseTimerStart start only once - at the start of the pause
     '''
     if pauseGame == True:
         #unPauseGameGraphics
-        textPrinter.undo() #Remove "game paused" message
-        textPrinter.setpos(300, 200) # where the center of the text is
+        #textPrinter.undo() #Remove "game paused" message
+        #textPrinter.setpos(300, 200) # where the center of the text is
+        
+        textPrinter.clearstamp(pauseGameStampIDlist[-1])
+        textPrinter.setpos(300, 110) # where the center of the text is
         
         # delete paused time from currentTime
 
@@ -51,10 +55,21 @@ def pauseGameHandler():
         pauseTimeStart = time.perf_counter()            
         
         # Print 3, 2, 1 before game resumes        
-        for num in range(3,0,-1):                          
+        for num in range(3,0,-1):
+            # print the fancy 3, 2, 1 images
+            textPrinter.shape("gamepaused-" + "{0}".format(num) + ".gif")
+            pauseGameStampIDlist.append(textPrinter.stamp())
+
+            # I don't know why, but removing the textPrinter.write messes up the whole thing. Try for yourself. Joseph
+            textPrinter.write("   ", True, align="center", font=("Arial", 48, "normal")) # Display nothing
+            
+            time.sleep(1)
+            textPrinter.undo()
+            textPrinter.clearstamp(pauseGameStampIDlist[-1])
+            '''                                  
             textPrinter.write("{0}".format(num), True, align="center", font=("Arial", 48, "normal"))
             time.sleep(1)
-            textPrinter.undo()  
+            textPrinter.undo()  '''
         # resumes game (after the "3, 2, 1")
         pauseGame = False
         # adds pause time interval to be subtracted from the current time
@@ -66,8 +81,12 @@ def pauseGameHandler():
     else:
         pauseGame = True # pauses game
         #pauseGameGraphics
-        textPrinter.setpos(300, 200) # where the center of the text is
-        textPrinter.write("GAME PAUSED", True, align="center", font=("Arial", 48, "normal"))
+        pauseGameStampIDlist = []
+        textPrinter.setpos(300, 110) # where the center of the text is
+        textPrinter.shape("gamepaused-text.gif")
+        pauseGameStampIDlist.append(textPrinter.stamp())
+        #textPrinter.setpos(300, 200) # where the center of the text is
+        #textPrinter.write("GAME PAUSED", True, align="center", font=("Arial", 48, "normal"))
 
 
 def initGraphics(screenWidth, screenHeight):
@@ -113,7 +132,65 @@ def initGraphics(screenWidth, screenHeight):
 
     #drawBackground
     #miscDrawer.setposition(?)
+    shapes = [
+    #Register images used so they can be used in turtle
+    "snake-head-1-thinner.gif", # caterpillar head - up - green circle with two black eyes
+    "snake-head-2-thinner.gif", # caterpillar head - left
+    "snake-head-3-thinner.gif", # caterpillar head - down
+    "snake-head-4-thinner.gif", # caterpillar head - right
 
+    "snake-head-dead-1.gif", # dead caterpillar head - up - green circle with two red crosses
+    "snake-head-dead-2.gif", # dead caterpillar head - left
+    "snake-head-dead-3.gif", # dead caterpillar head - down
+    "snake-head-dead-4.gif", # dead caterpillar head - right   
+     
+    "snake-body-40px.gif", # caterpillar body - plain green circle
+    "snake-body-v-thinner.gif", # caterpillar body - vertical
+    "snake-body-h-thinner.gif", # caterpillar body - horizontal
+    # caterpillar curve
+    "snake-curve-up-right.gif",
+    "snake-curve-up-left.gif",
+    "snake-curve-down-right.gif",
+    "snake-curve-down-left.gif",
+
+
+    "snake-tail-1.gif", # caterpillar tail - pointing up
+    "snake-tail-2.gif", # caterpillar tail - pointing left
+    "snake-tail-3.gif", # caterpillar tail - pointing down
+    "snake-tail-4.gif", # caterpillar tail - pointing right
+    "snake-tail-1-thinner.gif", # caterpillar tail - pointing up
+    "snake-tail-2-thinner.gif", # caterpillar tail - pointing left
+    "snake-tail-3-thinner.gif", # caterpillar tail - pointing down
+    "snake-tail-4-thinner.gif", # caterpillar tail - pointing right
+
+    "apple-2-40px.gif", # Bonus object - alternative apple (not good cuz it has white background)
+    "apple-40px.gif", # Bonus object - apple (good cuz it has transparent background,
+    "apple-2-40px.gif", # Bonus object - alternative apple (not good cuz it has white background)
+    "welcome-background.gif", #  welcome screen leaf background + "caterpilar" text
+    "welcome-button-instructions.gif",
+    "welcome-button-instructions-hover.gif",
+    "welcome-button-settings.gif",
+    "welcome-button-settings-hover.gif",
+    "welcome-button-start.gif",
+    "welcome-button-start-hover.gif",
+    "gameover-button-menu.gif",
+    "gameover-button-menu-hover.gif",
+    "gameover-button-retry.gif",
+    "gameover-button-retry-hover.gif",
+    "gameover-text.gif",
+    "gamepaused-3.gif",
+    "gamepaused-2.gif",
+    "gamepaused-1.gif",
+    "gamepaused-text.gif",
+
+
+    # ^^^ ADD NEW IMAGE HERE
+    
+    "leaf-green-40px.gif" # Bonus object - green leaf (from Khan Academy)
+    ]
+    for i in shapes:
+        wn.register_shape(i)
+    '''
     #Register images used so they can be used in turtle
     wn.register_shape("snake-head-1-thinner.gif") # caterpillar head - up - green circle with two black eyes
     wn.register_shape("snake-head-2-thinner.gif") # caterpillar head - left
@@ -139,11 +216,13 @@ def initGraphics(screenWidth, screenHeight):
     wn.register_shape("snake-tail-2-thinner.gif") # caterpillar tail - pointing left
     wn.register_shape("snake-tail-3-thinner.gif") # caterpillar tail - pointing down
     wn.register_shape("snake-tail-4-thinner.gif") # caterpillar tail - pointing right
+
     wn.register_shape("leaf-green-40px.gif") # Bonus object - green leaf (from Khan Academy)
+    wn.register_shape("apple-2-40px.gif") # Bonus object - alternative apple (not good cuz it has white background)
     wn.register_shape("apple-40px.gif") # Bonus object - apple (good cuz it has transparent background)
     wn.register_shape("apple-2-40px.gif") # Bonus object - alternative apple (not good cuz it has white background)
-
-
+    
+    '''
     """Note to Joseph: see below. Pls delete this comment when you've seen this"""
     wn.update() #Use this method to display the updated screen after drawing with turtle
 
@@ -194,6 +273,30 @@ def oneGame():
         print(grid[i])'''
 
     playerOneCaterpillar = Caterpillar(xSquares,ySquares,caterpillarDrawer,miscDrawer, textPrinter, scorePrinter, bonusObjDrawer, grid) #grid as parameter is temporary
+    
+    # Welcome page
+    stampIDlist = []
+
+    # background + title
+    miscDrawer.setpos(300, 200) # where the center of the text is
+    miscDrawer.shape("welcome-background.gif")
+    stampIDlist.append(miscDrawer.stamp())
+    
+    # Three buttons
+    miscDrawer.setpos(360, 185) # below caterpillar white text
+    miscDrawer.shape("welcome-button-start.gif")
+    stampIDlist.append(miscDrawer.stamp())
+    
+    miscDrawer.setpos(360, 255) # below caterpillar white text
+    miscDrawer.shape("welcome-button-settings.gif")
+    stampIDlist.append(miscDrawer.stamp())
+    
+    miscDrawer.setpos(360, 325) # below caterpillar white text
+    miscDrawer.shape("welcome-button-instructions.gif")
+    stampIDlist.append(miscDrawer.stamp())
+
+    # NEED caterpillar graphics on the left
+
     wn.update()
     wn.onkeypress(playerOneCaterpillar.upKeyHandler,"Up")
     wn.onkeypress(playerOneCaterpillar.upKeyHandler,"w")
@@ -215,6 +318,34 @@ def oneGame():
     previousTime = time.perf_counter()
 
 
+    # stay at welcome page until some button is clicked    
+    startGame = False
+    while startGame != True:
+        wn.update()        
+        time.sleep(2) # should be: if start game button pressed
+        startGame = True
+    
+    # clear welcome page
+    for image in stampIDlist:
+        miscDrawer.clearstamp(image)
+    '''
+    "welcome-button-instructions.gif",
+    "welcome-button-instructions-hover.gif",
+    "welcome-button-settings.gif",
+    "welcome-button-settings-hover.gif",
+    "welcome-button-start.gif",
+    "welcome-button-start-hover.gif",
+    "gameover-button-menu.gif",
+    "gameover-button-menu-hover.gif",
+    "gameover-button-retry.gif",
+    "gameover-button-retry-hover.gif",
+    "gameover-text.gif",
+    "gamepaused-3.gif",
+    "gamepaused-2.gif",
+    "gamepaused-1.gif",
+    "gamepaused-text.gif",
+    '''
+        
 
     while isDead != True:
         
@@ -243,8 +374,14 @@ def oneGame():
             #previousTime = currentTime #start countdown from end of loop?
 
     #Game over code
-    miscDrawer.setpos(300, 200) # where the center of the text is
-    miscDrawer.write("GAME OVER", True, align="center", font=("Arial", 48, "bold"))
+    miscDrawer.setpos(300, 110)    
+    miscDrawer.shape("gameover-text.gif")
+    stampIDlist.append(miscDrawer.stamp())
+    miscDrawer.write("          ") # puts nothing; must be here for above gameover text to display properly. Weird
+    #miscDrawer.write("GAME OVER", True, align="center", font=("Arial", 48, "bold"))
+
+    # when you need to clear the gameover message:
+    #miscDrawer.clearstamp(stampIDlist[-1])
     print("Your Caterpillar is Dead! :(") # gameover message
     
     # play wah-wah-wahhhh gameover sound

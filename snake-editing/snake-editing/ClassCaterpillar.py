@@ -106,9 +106,9 @@ class Caterpillar:
     bodyShape = {"vertical": "snake-body-v-thinner.gif",
                  "horizontal": "snake-body-h-thinner.gif",
                  "curveUpRight": "snake-curve-up-right.gif", # curveUpRight = has straight line borders on up and right side of the body
-                 "curveUpLeft": "", #Add here
-                 "curveDownRight": "", #Add here
-                 "curveDownLeft": "", #Add here
+                 "curveUpLeft": "snake-curve-up-left.gif", #Add here
+                 "curveDownRight": "snake-curve-down-right.gif", #Add here
+                 "curveDownLeft": "snake-curve-down-left.gif", #Add here
                  "oldGeneric": "snake-body-40px.gif"} #Eventually delete this entry
     tailShape = {"up": "snake-tail-1-thinner.gif",
                 "down": "snake-tail-3-thinner.gif",
@@ -247,9 +247,9 @@ class Caterpillar:
             elif (previousHeadDirection == "down" and newHeadDirection == "right") \
                 or (previousHeadDirection == "left" and newHeadDirection == "up"):
                 bodyShapeType = "curveUpRight"
-            else: #Delete this after all curve images have been added
-                bodyShapeType = "oldGeneric"
-            ''' Uncomment this section after all curve images have been added
+            #else: #Delete this after all curve images have been added
+                #bodyShapeType = "oldGeneric"
+            #Uncomment this section after all curve images have been added
             elif (previousHeadDirection == "up" and newHeadDirection == "right") \
                 or (previousHeadDirection == "left" and newHeadDirection == "down"):
                 bodyShapeType = "curveDownRight"
@@ -262,7 +262,7 @@ class Caterpillar:
             elif (previousHeadDirection == "down" and newHeadDirection == "left") \
                 or (previousHeadDirection == "right" and newHeadDirection == "up"):
                 bodyShapeType = "curveUpLeft"
-            '''
+            
             
             self.caterpillarDrawer.shape(self.bodyShape[bodyShapeType])
             self.caterpillarDrawer.setpos(self.grid[lastHeadY][lastHeadX])

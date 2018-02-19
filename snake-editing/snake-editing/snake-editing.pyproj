@@ -39,12 +39,25 @@
     <Content Include="apple-2-40px.gif" />
     <Content Include="apple-40px.gif" />
     <Content Include="battle-spell.wav" />
+    <Content Include="gameover-button-menu-hover.gif" />
+    <Content Include="gameover-button-menu.gif" />
+    <Content Include="gameover-button-retry-hover.gif" />
+    <Content Include="gameover-button-retry.gif" />
+    <Content Include="gameover-text.gif" />
+    <Content Include="gamepaused-1.gif" />
+    <Content Include="gamepaused-2.gif" />
+    <Content Include="gamepaused-3.gif" />
+    <Content Include="gamepaused-text.gif" />
     <Content Include="hit-whack.wav" />
     <Content Include="leaf-green-40px.gif" />
     <Content Include="Maple_small.gif" />
+    <Content Include="Screen.gif" />
     <Content Include="snake-body-40px.gif" />
     <Content Include="snake-body-h.gif" />
     <Content Include="snake-body-v.gif" />
+    <Content Include="snake-curve-down-left.gif" />
+    <Content Include="snake-curve-down-right.gif" />
+    <Content Include="snake-curve-up-left.gif" />
     <Content Include="snake-curve-up-right.gif" />
     <Content Include="snake-head-1.gif" />
     <Content Include="snake-head-2.gif" />
@@ -62,6 +75,13 @@
     <Content Include="snake-tail-2.gif" />
     <Content Include="snake-tail-3.gif" />
     <Content Include="snake-tail-4.gif" />
+    <Content Include="welcome-background.gif" />
+    <Content Include="welcome-button-instructions-hover.gif" />
+    <Content Include="welcome-button-instructions.gif" />
+    <Content Include="welcome-button-settings-hover.gif" />
+    <Content Include="welcome-button-settings.gif" />
+    <Content Include="welcome-button-start-hover.gif" />
+    <Content Include="welcome-button-start.gif" />
   </ItemGroup>
   <Import Condition="Exists($(PtvsTargetsFile))" Project="$(PtvsTargetsFile)" />
   <Import Condition="!Exists($(PtvsTargetsFile))" Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
