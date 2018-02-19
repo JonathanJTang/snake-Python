@@ -12,23 +12,25 @@ from ClassCaterpillar import *
 
 
 pauseGame = False
+pauseElapsed = 0
 '''
 firstTime = True
 '''
 def pauseGameHandler():
     """Called whenever the key for pause game is pressed"""
     print("space key pressed") #For debugging
+    global textPrinter
     global pauseGame
     global pauseElapsed # stores the total time paused (accumulates with every pause)
-    global pauseGameStampIDlist
+    global pauseGameStampID
     '''global firstTime # not the best way, but it makes pauseTimerStart start only once - at the start of the pause
     '''
     if pauseGame == True:
         #unPauseGameGraphics
         #textPrinter.undo() #Remove "game paused" message
         #textPrinter.setpos(300, 200) # where the center of the text is
-        
-        textPrinter.clearstamp(pauseGameStampIDlist[-1])
+        textPrinter.clearstamp(pauseGameStampID)
+        #textPrinter.clearstamp(pauseGameStampIDlist[-1])
         textPrinter.setpos(300, 110) # where the center of the text is
         
         # delete paused time from currentTime
@@ -55,14 +57,16 @@ def pauseGameHandler():
         for num in range(3,0,-1):
             # print the fancy 3, 2, 1 images
             textPrinter.shape("gamepaused-" + "{0}".format(num) + ".gif")
-            pauseGameStampIDlist.append(textPrinter.stamp())
+            #pauseGameStampIDlist.append(textPrinter.stamp())
+            pauseGameStampID = textPrinter.stamp()
 
             # I don't know why, but removing the textPrinter.write messes up the whole thing. Try for yourself. Joseph
             textPrinter.write("   ", True, align="center", font=("Arial", 48, "normal")) # Display nothing
             
             time.sleep(1)
             textPrinter.undo()
-            textPrinter.clearstamp(pauseGameStampIDlist[-1])
+            #textPrinter.clearstamp(pauseGameStampIDlist[-1])
+            textPrinter.clearstamp(pauseGameStampID)
             '''                                  
             textPrinter.write("{0}".format(num), True, align="center", font=("Arial", 48, "normal"))
             time.sleep(1)
@@ -81,7 +85,9 @@ def pauseGameHandler():
         pauseGameStampIDlist = []
         textPrinter.setpos(300, 110) # where the center of the text is
         textPrinter.shape("gamepaused-text.gif")
-        pauseGameStampIDlist.append(textPrinter.stamp())
+        pauseGameStampID = textPrinter.stamp()
+        #pauseGameStampIDlist.append(textPrinter.stamp())
+
         #textPrinter.setpos(300, 200) # where the center of the text is
         #textPrinter.write("GAME PAUSED", True, align="center", font=("Arial", 48, "normal"))
 
@@ -111,6 +117,7 @@ def initGraphics(screenWidth, screenHeight):
     miscDrawer.penup() #This should be the default state of the turtle
     miscDrawer.hideturtle() #This should be the default state of the turtle
     
+    global textPrinter
     textPrinter = turtle.Turtle() # will print text on screen when needed
     textPrinter.speed(0)
     textPrinter.penup() #This should be the default state of the turtle
