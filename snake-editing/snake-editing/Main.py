@@ -13,9 +13,27 @@ from ClassCaterpillar import *
 
 pauseGame = False
 pauseElapsed = 0
-'''
-firstTime = True
-'''
+startGame = False
+mouseX = 0 # instantaneous mouse x-coordinate
+mouseY = 0 # instantaneous mouse y-coordinate
+def buttonDetection(x, y):
+    print("Mouse clicked")
+    global mouseX # instantaneous mouse x-coordinate
+    global mouseY # instantaneous mouse y-coordinate
+    global startGame
+    if mouseX >= 260 and mouseX <= 465 and mouseY >= 165 and mouseY <= 200: # if "Start" button is clicked
+        startGame = True
+        time.sleep(0.1)
+
+def mouseMove(mousePosition):
+    '''Only called when the mouse is moved'''
+    global mouseX # had to use global variables
+    global mouseY
+    # get mouse coordinates (window coordinates)
+    mouseX = mousePosition.x 
+    mouseY = mousePosition.y
+    print('{}, {}'.format(mouseX, mouseY)) # for debugging
+
 def pauseGameHandler():
     """Called whenever the key for pause game is pressed"""
     print("space key pressed") #For debugging
@@ -298,6 +316,8 @@ def oneGame():
     miscDrawer.shape("welcome-button-instructions.gif")
     stampIDlist.append(miscDrawer.stamp())
 
+    # stampIDlist is now [welcome bkgr, start btn, settings btn, instructions btn]
+
     # NEED caterpillar graphics on the left
 
     wn.update()
@@ -315,18 +335,43 @@ def oneGame():
     #key presses of "right" will be ignored
     #Also, only the first valid key press per "turn" will be recorded
     wn.onkeypress(pauseGameHandler,"space") #pause button functionality
+    wn.onscreenclick(buttonDetection)
+   
+    # get mouse coordinates
+    canvas = wn.getcanvas() # get turtle canvas
+    canvas.bind('<Motion>', mouseMove) # call "mouseMove" function only when the mouse moves (has something to do with tkinter)
+
+    # x, y = canvas.winfo_pointerxy() # alternative way to get mouse coordinates, but constantly updates
+
     wn.listen()
 
     #Main game loop
     previousTime = time.perf_counter()
 
+    hover = False # to help the darkening of the button during mouse hover
 
     # stay at welcome page until some button is clicked    
-    startGame = False
+    global startGame
     while startGame != True:
-        wn.update()        
-        time.sleep(2) # should be: if start game button pressed
-        startGame = True
+        wn.update()             
+
+        # to darken the "Start creeping" button when the mouse hovers over it (x between 260-465, y between 165-200)
+        if mouseX >= 260 and mouseX <= 465 and mouseY >= 165 and mouseY <= 200 and hover == False: # if hovers on "Start" button
+            miscDrawer.clearstamp(stampIDlist[1]) # delete start button image
+            miscDrawer.setpos(360, 185) # below caterpillar white text
+            miscDrawer.shape("welcome-button-start-hover.gif")
+            stampIDlist[1] = miscDrawer.stamp()
+            hover = True # avoid repeating the execution of this code
+        elif (mouseX >= 260 and mouseX <= 465 and mouseY >= 165 and mouseY <= 200) == False and hover == True: # if the mouse exits the button boundaries
+            hover = False
+            miscDrawer.clearstamp(stampIDlist[1]) # delete start button image
+            miscDrawer.setpos(360, 185) # below caterpillar white text
+            miscDrawer.shape("welcome-button-start.gif")
+            stampIDlist[1] = miscDrawer.stamp()
+
+
+        #time.sleep(2) # should be: if start game button pressed
+            
     
     # clear welcome page
     for image in stampIDlist:
