@@ -23,7 +23,6 @@ def buttonDetection(x, y):
     global startGame
     if mouseX >= 260 and mouseX <= 465 and mouseY >= 165 and mouseY <= 200: # if "Start" button is clicked
         startGame = True
-        time.sleep(0.1)
 
 def mouseMove(mousePosition):
     '''Only called when the mouse is moved'''
@@ -194,6 +193,8 @@ def initGraphics(screenWidth, screenHeight):
     "welcome-button-settings-hover.gif",
     "welcome-button-start.gif",
     "welcome-button-start-hover.gif",
+    "welcome-caterpillar-whole.gif", # caterpillar graphics on the left of welcome screen
+
     "gameover-button-menu.gif",
     "gameover-button-menu-hover.gif",
     "gameover-button-retry.gif",
@@ -253,6 +254,7 @@ def initGraphics(screenWidth, screenHeight):
 def oneGame():
     #Initialize variables
     isDead = False
+    global startGame
     loopCount = 0
     loopsSinceLastSpeedIncrease = 0
     gameSpeed = 1
@@ -316,6 +318,11 @@ def oneGame():
     miscDrawer.shape("welcome-button-instructions.gif")
     stampIDlist.append(miscDrawer.stamp())
 
+    # Caterpillar graphics (on the left)
+    miscDrawer.setpos(70, 179) # upper-left corner
+    miscDrawer.shape("welcome-caterpillar-whole.gif")
+    stampIDlist.append(miscDrawer.stamp())
+    
     # stampIDlist is now [welcome bkgr, start btn, settings btn, instructions btn]
 
     # NEED caterpillar graphics on the left
@@ -335,12 +342,13 @@ def oneGame():
     #key presses of "right" will be ignored
     #Also, only the first valid key press per "turn" will be recorded
     wn.onkeypress(pauseGameHandler,"space") #pause button functionality
-    wn.onscreenclick(buttonDetection)
+    
    
     # get mouse coordinates
-    canvas = wn.getcanvas() # get turtle canvas
-    canvas.bind('<Motion>', mouseMove) # call "mouseMove" function only when the mouse moves (has something to do with tkinter)
-
+    if startGame == False:
+        canvas = wn.getcanvas() # get turtle canvas
+        canvas.bind('<Motion>', mouseMove) # call "mouseMove" function only when the mouse moves (has something to do with tkinter)
+        wn.onscreenclick(buttonDetection)
     # x, y = canvas.winfo_pointerxy() # alternative way to get mouse coordinates, but constantly updates
 
     wn.listen()
@@ -348,26 +356,57 @@ def oneGame():
     #Main game loop
     previousTime = time.perf_counter()
 
-    hover = False # to help the darkening of the button during mouse hover
+    # to help the darkening of the button during mouse hover
+    hover = [False, False, False] # each index is a button
 
     # stay at welcome page until some button is clicked    
-    global startGame
     while startGame != True:
         wn.update()             
-
+        # (260, 165) to (465, 200)
         # to darken the "Start creeping" button when the mouse hovers over it (x between 260-465, y between 165-200)
-        if mouseX >= 260 and mouseX <= 465 and mouseY >= 165 and mouseY <= 200 and hover == False: # if hovers on "Start" button
+        if mouseX >= 260 and mouseX <= 465 and mouseY >= 165 and mouseY <= 205 and hover[0] == False: # if hovers on "Start" button
             miscDrawer.clearstamp(stampIDlist[1]) # delete start button image
             miscDrawer.setpos(360, 185) # below caterpillar white text
             miscDrawer.shape("welcome-button-start-hover.gif")
             stampIDlist[1] = miscDrawer.stamp()
-            hover = True # avoid repeating the execution of this code
-        elif (mouseX >= 260 and mouseX <= 465 and mouseY >= 165 and mouseY <= 200) == False and hover == True: # if the mouse exits the button boundaries
-            hover = False
+            hover[0] = True # avoid repeating the execution of this code
+        if (mouseX >= 260 and mouseX <= 465 and mouseY >= 165 and mouseY <= 205) == False and hover[0] == True: # if the mouse exits the button boundaries
+            hover[0] = False
             miscDrawer.clearstamp(stampIDlist[1]) # delete start button image
             miscDrawer.setpos(360, 185) # below caterpillar white text
             miscDrawer.shape("welcome-button-start.gif")
             stampIDlist[1] = miscDrawer.stamp()
+
+        # (260, 230) to (465, 270)
+        # "Seetings" button         
+        if mouseX >= 260 and mouseX <= 465 and mouseY >= 230 and mouseY <= 270 and hover[1] == False: # if hovers on "Settings" button
+            miscDrawer.clearstamp(stampIDlist[2]) # delete start button image
+            miscDrawer.setpos(360, 255) # below caterpillar white text
+            miscDrawer.shape("welcome-button-settings-hover.gif")
+            stampIDlist[2] = miscDrawer.stamp()
+            hover[1] = True # avoid repeating the execution of this code
+        if (mouseX >= 260 and mouseX <= 465 and mouseY >= 230 and mouseY <= 270) == False and hover[1] == True: # if the mouse exits the button boundaries
+            hover[1] = False
+            miscDrawer.clearstamp(stampIDlist[2]) # delete start button image
+            miscDrawer.setpos(360, 255) # below caterpillar white text
+            miscDrawer.shape("welcome-button-settings.gif")
+            stampIDlist[2] = miscDrawer.stamp()
+        
+        # (260, 300) to (465, 335)
+        # "Instructions" button         
+        if mouseX >= 260 and mouseX <= 465 and mouseY >= 300 and mouseY <= 335 and hover[2] == False: # if hovers on "Settings" button
+            miscDrawer.clearstamp(stampIDlist[3]) # delete start button image
+            miscDrawer.setpos(360, 325) # below caterpillar white text
+            miscDrawer.shape("welcome-button-instructions-hover.gif")
+            stampIDlist[3] = miscDrawer.stamp()
+            hover[2] = True # avoid repeating the execution of this code
+        if (mouseX >= 260 and mouseX <= 465 and mouseY >= 300 and mouseY <= 335) == False and hover[2] == True: # if the mouse exits the button boundaries
+            hover[2] = False
+            miscDrawer.clearstamp(stampIDlist[3]) # delete start button image
+            miscDrawer.setpos(360, 325) # below caterpillar white text
+            miscDrawer.shape("welcome-button-instructions.gif")
+            stampIDlist[3] = miscDrawer.stamp()
+        
 
 
         #time.sleep(2) # should be: if start game button pressed
@@ -376,6 +415,8 @@ def oneGame():
     # clear welcome page
     for image in stampIDlist:
         miscDrawer.clearstamp(image)
+    
+    
     '''
     "welcome-button-instructions.gif",
     "welcome-button-instructions-hover.gif",
@@ -393,7 +434,33 @@ def oneGame():
     "gamepaused-1.gif",
     "gamepaused-text.gif",
     '''
-        
+    
+    # play sound    (with numpy)
+    try:
+        import numpy as np
+        numpyInstalled = True
+        # calculate note frequencies
+        A_freq = 440
+        Csh_freq = A_freq * 2 ** (4 / 12)
+        E_freq = A_freq * 2 ** (7 / 12)
+        # get timesteps for each sample, T is note duration in seconds
+        sample_rate = 44100
+        T = 0.25
+        t = np.linspace(0, T, T * sample_rate, False)
+        # generate sine wave notes
+        A_note = np.sin(A_freq * t * 2 * np.pi)
+        Csh_note = np.sin(Csh_freq * t * 2 * np.pi)
+        E_note = np.sin(E_freq * t * 2 * np.pi)
+        # concatenate notes
+        audio = np.hstack((A_note, Csh_note, E_note))
+        # normalize to 16-bit range
+        audio *= 32767 / np.max(np.abs(audio))
+        # convert to 16-bit data
+        audio = audio.astype(np.int16)
+        # start playback
+        play_obj = sa.play_buffer(audio, 1, 2, sample_rate)
+    except:
+        numpyInstalled = False
 
     while isDead != True:
         
@@ -413,6 +480,7 @@ def oneGame():
                 gameSpeed += 0.2
                 loopsSinceLastSpeedIncrease = 0
             """
+            
             wn.update() #apparently needed to listen to key presses
             isDead = playerOneCaterpillar.processFrame()
             wn.update()

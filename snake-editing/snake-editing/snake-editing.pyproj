@@ -82,6 +82,7 @@
     <Content Include="welcome-button-settings.gif" />
     <Content Include="welcome-button-start-hover.gif" />
     <Content Include="welcome-button-start.gif" />
+    <Content Include="welcome-caterpillar-whole.gif" />
   </ItemGroup>
   <Import Condition="Exists($(PtvsTargetsFile))" Project="$(PtvsTargetsFile)" />
   <Import Condition="!Exists($(PtvsTargetsFile))" Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
