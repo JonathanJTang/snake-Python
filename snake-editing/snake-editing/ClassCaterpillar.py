@@ -54,37 +54,38 @@ class BonusObj:
             Since BonusObj's never spawn on spaces occupied by a caterpillar,
             only need to check the caterpillar head's position each loop"""
         self.lifetime -= 1
-        
-        # make sure the blank/flash block gets removed in the end
-        if self.lifetime == 0:
-            self.turtleObj.clearstamp(self.flashStampID) # remove blank square, revealing the apple
 
+        # flash if about to disappear in 5 seconds         
+        self.flash()
+        
         if caterpillarHeadPositionTuple == self.positionTuple: #The caterpillar got to the BonusObj
             self.earned = True
+            # make sure the blank/flash block gets removed in the end        
+            self.turtleObj.clearstamp(self.flashStampID) # remove blank square, revealing the apple
+            
+            # makes a high-pitched beep when the caterpillar gets the object
             if winsoundInstalled:
-                # makes a high-pitched beep when the caterpillar gets the object
                 winsound.Beep(1000, 200) # winsound.Beep takes two parameters: frequency(in Hz), duration (in milleseconds)
             return self.destroy()
-
-        # flash if about to disappear in 5 seconds
-        if self.lifetime < 5: 
-            self.flash()
-            print("flash--" + str(self.lifetime))
+               
 
         if self.lifetime == 0: #if BonusObj's lifetime is up
             return self.destroy()
         return None,None
     
     def flash(self):
-        """Flashes 5 seconds before it disappears"""
-        if self.flashOn == False:   
-            self.turtleObj.shape(self.turtleShape["blank"])
-            self.turtleObj.setpos(self.coordinates) #Assumes turtleObj already has penup() and speed 0
-            self.flashStampID = self.turtleObj.stamp() # stamp blank square, covering up the apple
-            self.flashOn = True
-        elif self.flashOn == True:            
-            self.turtleObj.clearstamp(self.flashStampID) # remove blank square, revealing the apple
-            self.flashOn = False
+        """Flashes for 5 seconds before it disappears"""
+        if self.lifetime < 5:
+            print("flash--" + str(self.lifetime))
+            if self.flashOn == False and self.lifetime != 0:   # if apple is showing
+                self.turtleObj.shape(self.turtleShape["blank"])
+                self.turtleObj.setpos(self.coordinates) #Assumes turtleObj already has penup() and speed 0
+                self.flashStampID = self.turtleObj.stamp() # stamp blank square, covering up the apple
+                self.flashOn = True
+            elif self.flashOn == True:            
+                self.turtleObj.clearstamp(self.flashStampID) # remove blank square, revealing the apple
+                self.flashOn = False
+
 
     def destroy(self):
         """Removes BonusObj from screen, processes points change"""
@@ -369,7 +370,7 @@ class Caterpillar:
                         y = randNumGenerator.randint(0,self.yLimit)
                         if (x,y) not in self.posList: #bonusObj cannot spawn on a space the caterpillar occupies,
                             break #only break if (x,y) is not a space the caterpillar is on
-                    self.bonusObjOnScreen = BonusObj(self.bonusObjDrawer,"apple",(x,y),self.grid[y][x],random.randint(5,15),10,3)
+                    self.bonusObjOnScreen = BonusObj(self.bonusObjDrawer,"apple",(x,y),self.grid[y][x],random.randint(8,20),10,3)
                     """parameters of BonusObj.__init__() need to be confirmed"""
     
     def processKeyPress(self,pressedKeyStr):
