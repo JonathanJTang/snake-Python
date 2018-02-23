@@ -24,7 +24,8 @@ class BonusObj:
     #Class attributes below can be accessed by all instances of BonusObj
     turtleShape = {"apple": "apple-40px.gif",
                    "apple2": "apple-2-40px.gif",
-                   "leaf": "leaf-green-40px.gif"}
+                   "leaf": "leaf-green-40px.gif",
+                   "blank":"apple-flash.gif"}
     
     '''ISSUE:  Make parameters for all BonusObj types a class attribute?'''
 
@@ -36,6 +37,7 @@ class BonusObj:
         self.turtleObj = turtleObj
         self.positionTuple = positionTuple #The BonusObj's position in the virtual grid; not used in drawing the object
         self.turtleObj.shape(self.turtleShape[bonusTypeStr])
+        self.coordinates = turtleDisplayCoordTuple
         self.turtleObj.setpos(turtleDisplayCoordTuple) #Assumes turtleObj already has penup() and speed 0
         self.stampID = self.turtleObj.stamp() #screen.update() will be done elsewhere
         self.pointsValue = pointsValue #The number of points the player will get; could be negative
@@ -43,20 +45,46 @@ class BonusObj:
         self.earned = False #If the player has earned the BonusObj
         self.lifetime = lifetime #The number of game loops the object will exist
 
+        self.flashOn = False # if true, then cover up apple; if false, reveal apple
+        self.flashStampID = 0
+        print(self.lifetime) # lifetime is random number (see line 372)
+
     def update(self,caterpillarHeadPositionTuple):
         """This method should be called once per game loop.
             Since BonusObj's never spawn on spaces occupied by a caterpillar,
             only need to check the caterpillar head's position each loop"""
         self.lifetime -= 1
+        
+        # make sure the blank/flash block gets removed in the end
+        if self.lifetime == 0:
+            self.turtleObj.clearstamp(self.flashStampID) # remove blank square, revealing the apple
+
         if caterpillarHeadPositionTuple == self.positionTuple: #The caterpillar got to the BonusObj
             self.earned = True
             if winsoundInstalled:
                 # makes a high-pitched beep when the caterpillar gets the object
                 winsound.Beep(1000, 200) # winsound.Beep takes two parameters: frequency(in Hz), duration (in milleseconds)
             return self.destroy()
+
+        # flash if about to disappear in 5 seconds
+        if self.lifetime < 5: 
+            self.flash()
+            print("flash--" + str(self.lifetime))
+
         if self.lifetime == 0: #if BonusObj's lifetime is up
             return self.destroy()
         return None,None
+    
+    def flash(self):
+        """Flashes 5 seconds before it disappears"""
+        if self.flashOn == False:   
+            self.turtleObj.shape(self.turtleShape["blank"])
+            self.turtleObj.setpos(self.coordinates) #Assumes turtleObj already has penup() and speed 0
+            self.flashStampID = self.turtleObj.stamp() # stamp blank square, covering up the apple
+            self.flashOn = True
+        elif self.flashOn == True:            
+            self.turtleObj.clearstamp(self.flashStampID) # remove blank square, revealing the apple
+            self.flashOn = False
 
     def destroy(self):
         """Removes BonusObj from screen, processes points change"""
@@ -341,7 +369,7 @@ class Caterpillar:
                         y = randNumGenerator.randint(0,self.yLimit)
                         if (x,y) not in self.posList: #bonusObj cannot spawn on a space the caterpillar occupies,
                             break #only break if (x,y) is not a space the caterpillar is on
-                    self.bonusObjOnScreen = BonusObj(self.bonusObjDrawer,"apple",(x,y),self.grid[y][x],16,10,3)
+                    self.bonusObjOnScreen = BonusObj(self.bonusObjDrawer,"apple",(x,y),self.grid[y][x],random.randint(5,15),10,3)
                     """parameters of BonusObj.__init__() need to be confirmed"""
     
     def processKeyPress(self,pressedKeyStr):

@@ -186,6 +186,7 @@ def initGraphics(screenWidth, screenHeight):
     "apple-2-40px.gif", # Bonus object - alternative apple (not good cuz it has white background)
     "apple-40px.gif", # Bonus object - apple (good cuz it has transparent background,
     "apple-2-40px.gif", # Bonus object - alternative apple (not good cuz it has white background)
+    "apple-flash.gif",
     "welcome-background.gif", #  welcome screen leaf background + "caterpilar" text
     "welcome-button-instructions.gif",
     "welcome-button-instructions-hover.gif",
@@ -345,10 +346,9 @@ def oneGame():
     
    
     # get mouse coordinates
-    if startGame == False:
-        canvas = wn.getcanvas() # get turtle canvas
-        canvas.bind('<Motion>', mouseMove) # call "mouseMove" function only when the mouse moves (has something to do with tkinter)
-        wn.onscreenclick(buttonDetection)
+    canvas = wn.getcanvas() # get turtle canvas
+    canvas.bind('<Motion>', mouseMove) # call "mouseMove" function only when the mouse moves (has something to do with tkinter)
+    wn.onscreenclick(buttonDetection)
     # x, y = canvas.winfo_pointerxy() # alternative way to get mouse coordinates, but constantly updates
 
     wn.listen()
@@ -378,7 +378,7 @@ def oneGame():
             stampIDlist[1] = miscDrawer.stamp()
 
         # (260, 230) to (465, 270)
-        # "Seetings" button         
+        # "Settings" button         
         if mouseX >= 260 and mouseX <= 465 and mouseY >= 230 and mouseY <= 270 and hover[1] == False: # if hovers on "Settings" button
             miscDrawer.clearstamp(stampIDlist[2]) # delete start button image
             miscDrawer.setpos(360, 255) # below caterpillar white text
@@ -415,7 +415,7 @@ def oneGame():
     # clear welcome page
     for image in stampIDlist:
         miscDrawer.clearstamp(image)
-    
+    stampIDlist = []
     
     '''
     "welcome-button-instructions.gif",
@@ -459,6 +459,7 @@ def oneGame():
         audio = audio.astype(np.int16)
         # start playback
         play_obj = sa.play_buffer(audio, 1, 2, sample_rate)
+        time.sleep(0.8)
     except:
         numpyInstalled = False
 
@@ -495,6 +496,18 @@ def oneGame():
     stampIDlist.append(miscDrawer.stamp())
     miscDrawer.write("          ") # puts nothing; must be here for above gameover text to display properly. Weird
     #miscDrawer.write("GAME OVER", True, align="center", font=("Arial", 48, "bold"))
+
+    # Retry and Main Menu buttons
+    miscDrawer.setpos(300, 215)
+    miscDrawer.shape("gameover-button-retry.gif")
+    stampIDlist.append(miscDrawer.stamp())
+    miscDrawer.write("          ")
+    
+    miscDrawer.setpos(300, 290) 
+    miscDrawer.shape("gameover-button-menu.gif")
+    stampIDlist.append(miscDrawer.stamp())
+    miscDrawer.write("          ")
+    
 
     # when you need to clear the gameover message:
     #miscDrawer.clearstamp(stampIDlist[-1])

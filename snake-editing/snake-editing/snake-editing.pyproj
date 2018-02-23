@@ -38,6 +38,7 @@
   <ItemGroup>
     <Content Include="apple-2-40px.gif" />
     <Content Include="apple-40px.gif" />
+    <Content Include="apple-flash.gif" />
     <Content Include="battle-spell.wav" />
     <Content Include="gameover-button-menu-hover.gif" />
     <Content Include="gameover-button-menu.gif" />
