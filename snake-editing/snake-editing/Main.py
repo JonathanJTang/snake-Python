@@ -16,25 +16,30 @@ pauseElapsed = 0
 startGame = False
 mouseX = 0 # instantaneous mouse x-coordinate
 mouseY = 0 # instantaneous mouse y-coordinate
-def buttonDetection(x, y):
-    print("Mouse clicked: {0}, {1}".format(x,y))
-    global mouseX # instantaneous mouse x-coordinate
-    global mouseY # instantaneous mouse y-coordinate
-    global startGame
-    if mouseX >= 260 and mouseX <= 465 and mouseY >= 165 and mouseY <= 200: # if "Start" button is clicked
-        startGame = True
+mouseMoved = False
+buttonClicked = False
+currentState = "welcome page"
 
-def mouseMove(mousePosition):
+def buttonClickDetection(x, y):
+    print("Mouse clicked: {0}, {1}".format(x,y))
+    global buttonClicked
+    buttonClicked = True
+
+def mouseMoved(mousePosition):
     '''Only called when the mouse is moved'''
     global mouseX # had to use global variables
     global mouseY
+    global mouseMoved
     # Get mouse coordinates
-    '''Note: these coordinates are independent of the coordinate system
-       set by wn.setworldcoordinates();
-       they seem to always have the top left corner of the window as (0,0)'''
-    mouseX = mousePosition.x
-    mouseY = mousePosition.y
+    '''Note: coordinates in tkinter.Event object mousePosition are
+        independent of the coordinate system set by wn.setworldcoordinates().
+        mousePosition's (0,0) is the top left corner of the window, so an
+        adjustment factor is used to make (0,0) the top left corner of the canvas'''
+    mouseX = mousePosition.x - 4
+    mouseY = mousePosition.y - 4
     print("{0}, {1}".format(mouseX, mouseY)) # for debugging
+    mouseMoved = True
+
 
 def pauseGameHandler():
     """Called whenever the key for pause game is pressed"""
@@ -113,14 +118,22 @@ def pauseGameHandler():
 
 
 def initGraphics(screenWidth, screenHeight):
-    '''Initializes graphics for the game. Run only once.
-        '''
+    '''Initializes graphics for the game. Run only once.'''
+
     #Set up the screen object
     wn = turtle.Screen()
-    wn.setup(screenWidth, screenHeight)
+    wn.setup(screenWidth+20, screenHeight+20)  #Window dimensions, in pixels
+    wn.screensize(screenWidth,screenHeight)  #Canvas dimensions, in pixels
     #Bottom left corner (0,screenHeight), top right corner (screenWidth,0)
     #to make javascript-like coordinate system with (0,0) in the top left corner
+
     wn.setworldcoordinates(0, screenHeight, screenWidth, 0)
+    '''###################################################
+                    NOTE TO JOSEPH:
+       The follow line is a temporary hack; any better way to do it???
+       ####################################################'''
+    wn.setup(screenWidth+10,screenHeight+10)  #Resize window to make (0,0) of canvas closer to top left of window
+    
     wn.tracer(0, delay=1) #Turn turtle animation off (only each 0th screen update is performed)
     wn.title("Caterpillar: Game 1") #Include current score in title?
     wn.colormode(255)
@@ -213,46 +226,24 @@ def initGraphics(screenWidth, screenHeight):
     
     "leaf-green-40px.gif" # Bonus object - green leaf (from Khan Academy)
     ]
-    for i in shapes:
-        wn.register_shape(i)
-    '''
-    #Register images used so they can be used in turtle
-    wn.register_shape("snake-head-1-thinner.gif") # caterpillar head - up - green circle with two black eyes
-    wn.register_shape("snake-head-2-thinner.gif") # caterpillar head - left
-    wn.register_shape("snake-head-3-thinner.gif") # caterpillar head - down
-    wn.register_shape("snake-head-4-thinner.gif") # caterpillar head - right
+    for imageName in shapes:
+        wn.register_shape(imageName)
 
-    wn.register_shape("snake-head-dead-1.gif") # dead caterpillar head - up - green circle with two red crosses
-    wn.register_shape("snake-head-dead-2.gif") # dead caterpillar head - left
-    wn.register_shape("snake-head-dead-3.gif") # dead caterpillar head - down
-    wn.register_shape("snake-head-dead-4.gif") # dead caterpillar head - right   
-     
-    wn.register_shape("snake-body-40px.gif") # caterpillar body - plain green circle
-    wn.register_shape("snake-body-v-thinner.gif") # caterpillar body - vertical
-    wn.register_shape("snake-body-h-thinner.gif") # caterpillar body - horizontal
-    # caterpillar curve
-    wn.register_shape("snake-curve-up-right.gif")
-
-    wn.register_shape("snake-tail-1.gif") # caterpillar tail - pointing up
-    wn.register_shape("snake-tail-2.gif") # caterpillar tail - pointing left
-    wn.register_shape("snake-tail-3.gif") # caterpillar tail - pointing down
-    wn.register_shape("snake-tail-4.gif") # caterpillar tail - pointing right
-    wn.register_shape("snake-tail-1-thinner.gif") # caterpillar tail - pointing up
-    wn.register_shape("snake-tail-2-thinner.gif") # caterpillar tail - pointing left
-    wn.register_shape("snake-tail-3-thinner.gif") # caterpillar tail - pointing down
-    wn.register_shape("snake-tail-4-thinner.gif") # caterpillar tail - pointing right
-
-    wn.register_shape("leaf-green-40px.gif") # Bonus object - green leaf (from Khan Academy)
-    wn.register_shape("apple-2-40px.gif") # Bonus object - alternative apple (not good cuz it has white background)
-    wn.register_shape("apple-40px.gif") # Bonus object - apple (good cuz it has transparent background)
-    wn.register_shape("apple-2-40px.gif") # Bonus object - alternative apple (not good cuz it has white background)
-    
-    '''
     """Note to Joseph: see below. Pls delete this comment when you've seen this"""
     wn.update() #Use this method to display the updated screen after drawing with turtle
 
     return wn, caterpillarDrawer, miscDrawer, textPrinter, scorePrinter, bonusObjDrawer # returns screen & turtles
 
+def stateController():
+    """Whenever state is changed, use 'return' to exit the function and have an outside loop call the function again """
+    global currentState
+    if currentState == "welcome page":
+        pass
+    elif currentState == "main game":
+        pass
+    elif currentState == "game over page":
+        pass
+    pass
 
 def oneGame():
     #Initialize variables
@@ -301,7 +292,7 @@ def oneGame():
     playerOneCaterpillar = Caterpillar(xSquares,ySquares,caterpillarDrawer,miscDrawer, textPrinter, scorePrinter, bonusObjDrawer, grid) #grid as parameter is temporary
     
     # Welcome page
-    stampIDlist = []
+    stampIDlist = [0,0]
 
     # background + title
     miscDrawer.setpos(300, 200) # where the center of the text is
@@ -309,17 +300,26 @@ def oneGame():
     stampIDlist.append(miscDrawer.stamp())
     
     # Three buttons
-    miscDrawer.setpos(360, 185) # below caterpillar white text
+    '''  OK to delete???
+
+    miscDrawer.setpos(355, 185+2) # below caterpillar white text
     miscDrawer.shape("welcome-button-start.gif")
     stampIDlist.append(miscDrawer.stamp())
     
-    miscDrawer.setpos(360, 255) # below caterpillar white text
+    miscDrawer.setpos(355, 255+2) # below caterpillar white text
     miscDrawer.shape("welcome-button-settings.gif")
     stampIDlist.append(miscDrawer.stamp())
     
-    miscDrawer.setpos(360, 325) # below caterpillar white text
+    miscDrawer.setpos(355, 325+2) # below caterpillar white text
     miscDrawer.shape("welcome-button-instructions.gif")
     stampIDlist.append(miscDrawer.stamp())
+    '''
+
+    welcomePageButtons = [
+    Button(250,166,460,204,"welcome-button-start.gif","welcome-button-start-hover.gif",miscDrawer),
+    Button(250,236,460,274,"welcome-button-settings.gif","welcome-button-settings-hover.gif",miscDrawer),
+    Button(250,306,460,344,"welcome-button-instructions.gif","welcome-button-instructions-hover.gif",miscDrawer)
+    ]
 
     # Caterpillar graphics (on the left)
     miscDrawer.setpos(70, 179) # upper-left corner
@@ -349,13 +349,13 @@ def oneGame():
     
    
     # get mouse coordinates
-    canvas = wn.getcanvas() # get the Tkinter canvas of the screen object
-    canvas.bind('<Motion>', mouseMove) # call "mouseMove" function only when the mouse moves (has something to do with tkinter)
+    canvas = wn.getcanvas() # get the Tkinter canvas of the turtle Screen object
+    canvas.bind('<Motion>', mouseMoved) # "mouseMoved" will be called when the mouse moves (has something to do with tkinter)
     '''Whenever the mouse is moved inside the turtle window, a tkinter.Event
        object will be passed to mouseMove() that contains the (x,y) coordinates
        of the mouse. These coordinates are independent of wn.setworldcoordinates():
        they seem to always have the top left corner of the window as (0,0)'''
-    wn.onscreenclick(buttonDetection)
+    wn.onscreenclick(buttonClickDetection)
     # x, y = canvas.winfo_pointerxy() # alternative way to get mouse coordinates, but constantly updates
 
     wn.listen()
@@ -368,52 +368,65 @@ def oneGame():
 
     # stay at welcome page until some button is clicked    
     while startGame != True:
-        wn.update()             
-        # (260, 165) to (465, 200)
+        
+        #To avoid too much resource usage in checking the buttons
+        #Could rewrite this to be a time.perf_counter() subtraction loop
+        time.sleep(0.02)
+        
+        for button in welcomePageButtons:
+            if(button.hover == False and button.mouseCoordsOnButton(mouseX,mouseY)):
+                button.changeToHover(miscDrawer)
+            elif(button.hover == True and not button.mouseCoordsOnButton(mouseX,mouseY)):
+                button.changeToOrig(miscDrawer)
+        wn.update()
+        
+        ''' OK to delete??
+          
+        # (250, 166) to (460, 204)
         # to darken the "Start creeping" button when the mouse hovers over it (x between 260-465, y between 165-200)
-        if mouseX >= 260 and mouseX <= 465 and mouseY >= 165 and mouseY <= 205 and hover[0] == False: # if hovers on "Start" button
+        if mouseX >= 250 and mouseX <= 460 and mouseY >= 166 and mouseY <= 204 and hover[0] == False: # if hovers on "Start" button
             miscDrawer.clearstamp(stampIDlist[1]) # delete start button image
-            miscDrawer.setpos(360, 185) # below caterpillar white text
+            miscDrawer.setpos(355, 185+2) # below caterpillar white text
             miscDrawer.shape("welcome-button-start-hover.gif")
             stampIDlist[1] = miscDrawer.stamp()
             hover[0] = True # avoid repeating the execution of this code
-        if (mouseX >= 260 and mouseX <= 465 and mouseY >= 165 and mouseY <= 205) == False and hover[0] == True: # if the mouse exits the button boundaries
+        if (mouseX >= 250 and mouseX <= 460 and mouseY >= 166 and mouseY <= 204) == False and hover[0] == True: # if the mouse exits the button boundaries
             hover[0] = False
             miscDrawer.clearstamp(stampIDlist[1]) # delete start button image
-            miscDrawer.setpos(360, 185) # below caterpillar white text
+            miscDrawer.setpos(355, 185+2) # below caterpillar white text
             miscDrawer.shape("welcome-button-start.gif")
             stampIDlist[1] = miscDrawer.stamp()
 
-        # (260, 230) to (465, 270)
+        # (250, 236) to (460, 274)
         # "Settings" button         
-        if mouseX >= 260 and mouseX <= 465 and mouseY >= 230 and mouseY <= 270 and hover[1] == False: # if hovers on "Settings" button
+        if mouseX >= 250 and mouseX <= 460 and mouseY >= 236 and mouseY <= 274 and hover[1] == False: # if hovers on "Settings" button
             miscDrawer.clearstamp(stampIDlist[2]) # delete start button image
-            miscDrawer.setpos(360, 255) # below caterpillar white text
+            miscDrawer.setpos(355, 255+2) # below caterpillar white text
             miscDrawer.shape("welcome-button-settings-hover.gif")
             stampIDlist[2] = miscDrawer.stamp()
             hover[1] = True # avoid repeating the execution of this code
-        if (mouseX >= 260 and mouseX <= 465 and mouseY >= 230 and mouseY <= 270) == False and hover[1] == True: # if the mouse exits the button boundaries
+        if (mouseX >= 250 and mouseX <= 460 and mouseY >= 236 and mouseY <= 274) == False and hover[1] == True: # if the mouse exits the button boundaries
             hover[1] = False
             miscDrawer.clearstamp(stampIDlist[2]) # delete start button image
-            miscDrawer.setpos(360, 255) # below caterpillar white text
+            miscDrawer.setpos(355, 255+2) # below caterpillar white text
             miscDrawer.shape("welcome-button-settings.gif")
             stampIDlist[2] = miscDrawer.stamp()
         
-        # (260, 300) to (465, 335)
+        # (250, 306) to (460, 344)
         # "Instructions" button         
-        if mouseX >= 260 and mouseX <= 465 and mouseY >= 300 and mouseY <= 335 and hover[2] == False: # if hovers on "Settings" button
+        if mouseX >= 250 and mouseX <= 460 and mouseY >= 306 and mouseY <= 344 and hover[2] == False: # if hovers on "Settings" button
             miscDrawer.clearstamp(stampIDlist[3]) # delete start button image
-            miscDrawer.setpos(360, 325) # below caterpillar white text
+            miscDrawer.setpos(355, 325+2) # below caterpillar white text
             miscDrawer.shape("welcome-button-instructions-hover.gif")
             stampIDlist[3] = miscDrawer.stamp()
             hover[2] = True # avoid repeating the execution of this code
-        if (mouseX >= 260 and mouseX <= 465 and mouseY >= 300 and mouseY <= 335) == False and hover[2] == True: # if the mouse exits the button boundaries
+        if (mouseX >= 250 and mouseX <= 460 and mouseY >= 306 and mouseY <= 344) == False and hover[2] == True: # if the mouse exits the button boundaries
             hover[2] = False
             miscDrawer.clearstamp(stampIDlist[3]) # delete start button image
-            miscDrawer.setpos(360, 325) # below caterpillar white text
+            miscDrawer.setpos(355, 325+2) # below caterpillar white text
             miscDrawer.shape("welcome-button-instructions.gif")
             stampIDlist[3] = miscDrawer.stamp()
-        
+        '''
 
 
         #time.sleep(2) # should be: if start game button pressed

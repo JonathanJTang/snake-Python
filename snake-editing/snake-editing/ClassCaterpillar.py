@@ -38,32 +38,29 @@ class Button:
         self.topLeftY = topLeftY
         self.bottomRightX = bottomRightX
         self.bottomRightY = bottomRightY
-        self.posTuple = ((topLeftX+bottomRightX)//2, (topLeftY+bottomRightY)//2)
+        self.posTuple = ((topLeftX+bottomRightX)//2, (topLeftY+bottomRightY)//2 + 2)
         self.origImageStr = origImageStr
         self.hoverImageStr = hoverImageStr
         self.hover = False
 
         #Display button
-        turtleObj.setpos(posTuple)
+        turtleObj.setpos(self.posTuple)
         turtleObj.shape(self.origImageStr)
         self.currentStamp = turtleObj.stamp()
 
-    def isHover(self):
-        return self.hover
-
     def changeToHover(self, turtleObj):
-        """Change the button's appearance to the hover image"""
+        """Change the button's appearance to the 'hover' image"""
         turtleObj.clearstamp(self.currentStamp)
         turtleObj.shape(self.hoverImageStr)
-        turtleObj.setpos(posTuple)
+        turtleObj.setpos(self.posTuple)
         self.currentStamp = turtleObj.stamp()
         self.hover = True
 
     def changeToOrig(self, turtleObj):
-        """Change the button's appearance to the original image"""
+        """Change the button's appearance to the 'original' image"""
         turtleObj.clearstamp(self.currentStamp)
         turtleObj.shape(self.origImageStr)
-        turtleObj.setpos(posTuple)
+        turtleObj.setpos(self.posTuple)
         self.currentStamp = turtleObj.stamp()
         self.hover = False
 
@@ -74,6 +71,8 @@ class Button:
                self.topLeftY <= mouseYCoord and mouseYCoord <= self.bottomRightY)
 
     def clicked(self):
+        """Should be called when the button is clicked to
+            execute code or change global state variable"""
         pass
 
 
