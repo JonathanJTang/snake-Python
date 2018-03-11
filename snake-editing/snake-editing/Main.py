@@ -17,7 +17,7 @@ startGame = False
 mouseX = 0 # instantaneous mouse x-coordinate
 mouseY = 0 # instantaneous mouse y-coordinate
 def buttonDetection(x, y):
-    print("Mouse clicked")
+    print("Mouse clicked: {0}, {1}".format(x,y))
     global mouseX # instantaneous mouse x-coordinate
     global mouseY # instantaneous mouse y-coordinate
     global startGame
@@ -28,10 +28,13 @@ def mouseMove(mousePosition):
     '''Only called when the mouse is moved'''
     global mouseX # had to use global variables
     global mouseY
-    # get mouse coordinates (window coordinates)
-    mouseX = mousePosition.x 
+    # Get mouse coordinates
+    '''Note: these coordinates are independent of the coordinate system
+       set by wn.setworldcoordinates();
+       they seem to always have the top left corner of the window as (0,0)'''
+    mouseX = mousePosition.x
     mouseY = mousePosition.y
-    print('{}, {}'.format(mouseX, mouseY)) # for debugging
+    print("{0}, {1}".format(mouseX, mouseY)) # for debugging
 
 def pauseGameHandler():
     """Called whenever the key for pause game is pressed"""
@@ -118,7 +121,6 @@ def initGraphics(screenWidth, screenHeight):
     #Bottom left corner (0,screenHeight), top right corner (screenWidth,0)
     #to make javascript-like coordinate system with (0,0) in the top left corner
     wn.setworldcoordinates(0, screenHeight, screenWidth, 0)
-    #"""temporarily commented for easier debugging"""
     wn.tracer(0, delay=1) #Turn turtle animation off (only each 0th screen update is performed)
     wn.title("Caterpillar: Game 1") #Include current score in title?
     wn.colormode(255)
@@ -334,20 +336,25 @@ def oneGame():
     wn.onkeypress(playerOneCaterpillar.leftKeyHandler,"Left")
     wn.onkeypress(playerOneCaterpillar.rightKeyHandler,"Right")
     #Keys w,a,s,d reserved for player two
-    #wn.onkeypress(playerOneCaterpillar.upKeyHandler,"w")
-    #wn.onkeypress(playerOneCaterpillar.leftKeyHandler,"a")
-    #wn.onkeypress(playerOneCaterpillar.downKeyHandler,"s")
-    #wn.onkeypress(playerOneCaterpillar.rightKeyHandler,"d")
-    #Note: the caterpillar can't "turn" in the direct opposite direction
-    #of the last headDirection, ie if initial default headDirection was "left",
-    #key presses of "right" will be ignored
-    #Also, only the first valid key press per "turn" will be recorded
+    #wn.onkeypress(playerTwoCaterpillar.upKeyHandler,"w")
+    #wn.onkeypress(playerTwoCaterpillar.leftKeyHandler,"a")
+    #wn.onkeypress(playerTwoCaterpillar.downKeyHandler,"s")
+    #wn.onkeypress(playerTwoCaterpillar.rightKeyHandler,"d")
+
+    '''Note: the caterpillar can't "turn" in the direct opposite direction
+        of the last headDirection, ie if initial default headDirection was "left",
+        key presses of "right" will be ignored
+        Also, only the first valid key press per "turn" will be recorded'''
     wn.onkeypress(pauseGameHandler,"space") #pause button functionality
     
    
     # get mouse coordinates
-    canvas = wn.getcanvas() # get turtle canvas
+    canvas = wn.getcanvas() # get the Tkinter canvas of the screen object
     canvas.bind('<Motion>', mouseMove) # call "mouseMove" function only when the mouse moves (has something to do with tkinter)
+    '''Whenever the mouse is moved inside the turtle window, a tkinter.Event
+       object will be passed to mouseMove() that contains the (x,y) coordinates
+       of the mouse. These coordinates are independent of wn.setworldcoordinates():
+       they seem to always have the top left corner of the window as (0,0)'''
     wn.onscreenclick(buttonDetection)
     # x, y = canvas.winfo_pointerxy() # alternative way to get mouse coordinates, but constantly updates
 

@@ -22,6 +22,61 @@ except: #on Macs there will be ImportError
     winsoundInstalled = False
 '''
 
+class Button:
+    """Class for buttons on the turtle window.
+        Will change color when mouse hovers over it;
+        Will lead to an action/change of state when clicked"""
+
+    #Keep in mind that turtleObj used in this class are shared among all buttons
+    #It's assumed that the turtleObj will be penup
+
+    def __init__(self, topLeftX, topLeftY, bottomRightX, bottomRightY, origImageStr, hoverImageStr, turtleObj):
+        """Initialize button object by saving required variables and
+            displaying the original state of the button"""
+        #Note: topLeft and bottomRight coordinates are turtle coordinates
+        self.topLeftX = topLeftX
+        self.topLeftY = topLeftY
+        self.bottomRightX = bottomRightX
+        self.bottomRightY = bottomRightY
+        self.posTuple = ((topLeftX+bottomRightX)//2, (topLeftY+bottomRightY)//2)
+        self.origImageStr = origImageStr
+        self.hoverImageStr = hoverImageStr
+        self.hover = False
+
+        #Display button
+        turtleObj.setpos(posTuple)
+        turtleObj.shape(self.origImageStr)
+        self.currentStamp = turtleObj.stamp()
+
+    def isHover(self):
+        return self.hover
+
+    def changeToHover(self, turtleObj):
+        """Change the button's appearance to the hover image"""
+        turtleObj.clearstamp(self.currentStamp)
+        turtleObj.shape(self.hoverImageStr)
+        turtleObj.setpos(posTuple)
+        self.currentStamp = turtleObj.stamp()
+        self.hover = True
+
+    def changeToOrig(self, turtleObj):
+        """Change the button's appearance to the original image"""
+        turtleObj.clearstamp(self.currentStamp)
+        turtleObj.shape(self.origImageStr)
+        turtleObj.setpos(posTuple)
+        self.currentStamp = turtleObj.stamp()
+        self.hover = False
+
+    def mouseCoordsOnButton(self, mouseXCoord, mouseYCoord):
+        """Check if the given mouse coordinates are within
+            the boundaries of the button"""
+        return (self.topLeftX <= mouseXCoord and mouseXCoord <= self.bottomRightX and
+               self.topLeftY <= mouseYCoord and mouseYCoord <= self.bottomRightY)
+
+    def clicked(self):
+        pass
+
+
 class BonusObj:
     """Class for Bonus objects that affect a caterpillar's
         properLength, points, etc."""
