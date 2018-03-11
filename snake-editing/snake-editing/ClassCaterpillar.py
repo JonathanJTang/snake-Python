@@ -2,13 +2,17 @@
 
 import turtle
 import random
+"""Module simpleaudio: appears to be supported on all operating systems.
+http://simpleaudio.readthedocs.io/en/latest/capabilities.html """
 try:
     import simpleaudio as sa
+    simpleaudioInstalled = True
 except:
+    #print("Module simpleaudio not installed on device. All game sounds will be disabled")
+    simpleaudioInstalled = False
     pass
-"""To Joseph: Check out module simpleaudio? It appears to be supported on all operating systems.
-http://simpleaudio.readthedocs.io/en/latest/capabilities.html 
-OK, already installed simpleaudio through "pip3 install simpleaudio" command in command prompt. -Joseph """
+
+'''
 try:
     import winsound #Only available on windows devices
     # see https://docs.python.org/3/library/winsound.html
@@ -16,7 +20,7 @@ try:
 except: #on Macs there will be ImportError
     #print("Module winsound not installed on device. All game sounds will be disabled")
     winsoundInstalled = False
-
+'''
 
 class BonusObj:
     """Class for Bonus objects that affect a caterpillar's
@@ -63,9 +67,11 @@ class BonusObj:
             # make sure the blank/flash block gets removed in the end        
             self.turtleObj.clearstamp(self.flashStampID) # remove blank square, revealing the apple
             
+            '''
             # makes a high-pitched beep when the caterpillar gets the object
             if winsoundInstalled:
                 winsound.Beep(1000, 200) # winsound.Beep takes two parameters: frequency(in Hz), duration (in milleseconds)
+            '''
             return self.destroy()
                
 
@@ -410,9 +416,11 @@ class Caterpillar:
         """The main game loop should call this method once each loop.
             This method updates internal variables and the screen display"""
         
+        '''
         if winsoundInstalled:
             # makes a low-pitched beep every time the caterpillar moves
             winsound.Beep(600, 100) # winsound.Beep takes two parameters: frequency(in Hz), duration (in milleseconds)
+        '''
 
         nowDead = self.moveCaterpillar()
         self.determineBonusSpawn()

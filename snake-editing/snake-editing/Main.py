@@ -541,6 +541,7 @@ def oneGame():
         # start playback
         play_obj = sa.play_buffer(audio, 1, 2, sample_rate)
 
+    """
     elif winsoundInstalled:
         # wah-wah-wahhhh sound A-->Ab-->G
         winsound.Beep(440, 700) # winsound.Beep takes two parameters: frequency(in Hz), duration (in milleseconds)
@@ -550,6 +551,7 @@ def oneGame():
         winsound.Beep(523, 700) # winsound.Beep takes two parameters: frequency(in Hz), duration (in milleseconds)
         winsound.Beep(494, 700)
         winsound.Beep(466, 1500)'''
+    """
 
     return True #i.e. exitProgram = True
 
