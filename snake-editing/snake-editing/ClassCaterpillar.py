@@ -27,7 +27,9 @@ class Button:
         Will change color when mouse hovers over it;
         Will lead to an action/change of state when clicked"""
 
-    #Keep in mind that turtleObj used in this class are shared among all buttons
+    #The turtleObj used in this class should be shared among all buttons;
+    #Most notably, the same turtle object must be given for
+    #all methods related to one button.
     #It's assumed that the turtleObj will be penup
 
     def __init__(self, topLeftX, topLeftY, bottomRightX, bottomRightY, origImageStr, hoverImageStr, turtleObj):
@@ -42,27 +44,29 @@ class Button:
         self.origImageStr = origImageStr
         self.hoverImageStr = hoverImageStr
         self.hover = False
+        self.currentStamp = False
 
         #Display button
-        turtleObj.setpos(self.posTuple)
+        self.changeToOrig(turtleObj)
+
+    def changeToOrig(self, turtleObj):
+        """Change the button's appearance to the 'original' image.
+            This method should be called to initialize/re-initialize a button"""
+        if self.currentStamp != False:
+            turtleObj.clearstamp(self.currentStamp)
         turtleObj.shape(self.origImageStr)
+        turtleObj.setpos(self.posTuple)
         self.currentStamp = turtleObj.stamp()
+        self.hover = False
 
     def changeToHover(self, turtleObj):
         """Change the button's appearance to the 'hover' image"""
+        #if self.currentStamp != False:
         turtleObj.clearstamp(self.currentStamp)
         turtleObj.shape(self.hoverImageStr)
         turtleObj.setpos(self.posTuple)
         self.currentStamp = turtleObj.stamp()
         self.hover = True
-
-    def changeToOrig(self, turtleObj):
-        """Change the button's appearance to the 'original' image"""
-        turtleObj.clearstamp(self.currentStamp)
-        turtleObj.shape(self.origImageStr)
-        turtleObj.setpos(self.posTuple)
-        self.currentStamp = turtleObj.stamp()
-        self.hover = False
 
     def mouseCoordsOnButton(self, mouseXCoord, mouseYCoord):
         """Check if the given mouse coordinates are within
@@ -72,8 +76,15 @@ class Button:
 
     def clicked(self):
         """Should be called when the button is clicked to
-            execute code or change global state variable"""
+            execute code or change global state variable.
+            CURRENTLY NOT IMPLEMENTED"""
         pass
+
+    def disable(self, turtleObj):
+        """Called when button is no longer needed in a state.
+            RemovesResets some variables"""
+        turtleObj.clearstamp(self.currentStamp)
+        self.currentStamp = False
 
 
 class BonusObj:
@@ -201,21 +212,23 @@ class Caterpillar:
         self.scorePrinter = scorePrinter
         self.bonusObjDrawer = bonusObjDrawer
 
+        self.xLimit = xSquares - 1
+        self.yLimit = ySquares - 1
+
+        self.obstaclePositionTuples = obstaclePositionTuples
+
+    def beginGame(self):
+        """Method called when starting a new game"""
         self.currentHeadDirection = "left"
         self.lastHeadDirection = "left"
         self.currentHeadDirectionSet = False
-        self.xLimit = xSquares - 1
-        self.yLimit = ySquares - 1
-        
         self.posList = [] #List of (x,y) tuples on the virtual grid; used for internal processing
         self.stampIDList = [] #List of stampIDs for the caterpillar; used for turtle to display the caterpillar on screen
         
-        ''' disabled user-set initialPointTuple functionality '''
-                
-        self.properLength = 5 #initial length of caterpillar
         ''' disabled user-set self.length functionality
         #self.properLength = initialLength #The length of the caterpillar, in number of units on the virtual grid
         '''
+        self.properLength = 5 #initial length of caterpillar
 
         self.currentScore = 0
         """Note to Joseph: Consistency of variable names, such as the one below:
@@ -226,16 +239,16 @@ class Caterpillar:
         self.bonusMaxFreq = 2 #i.e. x turns minimum between bonuses
         self.bonusObjOnScreen = None
 
-        self.obstaclePositionTuples = obstaclePositionTuples
         #Note: game speed is set by the main game loop: does the
         #Caterpillar object need to know the game speed? It would
         #potentially affect the game score
 
+        ''' disabled user-set initialPointTuple functionality '''
         #Set up initial graphics for the caterpillar object
         """NOTE: there should be a better way to do this"""
         for i in range(-2,-2+self.properLength):
-            self.posList.append((xSquares//2-i,ySquares//2))
-            self.caterpillarDrawer.setpos(self.grid[ySquares//2][xSquares//2-i])
+            self.posList.append((self.xLimit//2-i,self.yLimit//2))
+            self.caterpillarDrawer.setpos(self.grid[self.yLimit//2][self.xLimit//2-i])
             self.caterpillarDrawer.shape(self.bodyShape["horizontal"])
             if i == -2: #Switch image for caterpillar tail
                 self.caterpillarDrawer.shape(self.tailShape["right"])
