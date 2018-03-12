@@ -255,10 +255,13 @@ def stateController(wn, **keywordParameters):
 
         # Three buttons
         welcomePageButtons = [
-        Button(250,166,460,204,"welcome-button-start.gif","welcome-button-start-hover.gif",miscDrawer),
-        Button(250,236,460,274,"welcome-button-settings.gif","welcome-button-settings-hover.gif",miscDrawer),
-        Button(250,306,460,344,"welcome-button-instructions.gif","welcome-button-instructions-hover.gif",miscDrawer)
+        Button(250,166,460,204,"welcome-button-start.gif","welcome-button-start-hover.gif"),
+        Button(250,236,460,274,"welcome-button-settings.gif","welcome-button-settings-hover.gif"),
+        Button(250,306,460,344,"welcome-button-instructions.gif","welcome-button-instructions-hover.gif")
         ]
+
+        for button in welcomePageButtons:
+            button.enable(miscDrawer)
 
         wn.update()
 
@@ -282,10 +285,13 @@ def stateController(wn, **keywordParameters):
             if mouseClicked:
                 """There might be a better way to do this"""
                 if welcomePageButtons[0].mouseCoordsOnButton(mouseX,mouseY):
+                    # 'Start' button clicked
                     startGame = True
                 elif welcomePageButtons[1].mouseCoordsOnButton(mouseX,mouseY):
+                    # 'Settings' button clicked
                     pass
                 elif welcomePageButtons[2].mouseCoordsOnButton(mouseX,mouseY):
+                    # 'Instructions' button clicked
                     pass
                 mouseClicked = False
                   
@@ -377,6 +383,7 @@ def stateController(wn, **keywordParameters):
 
     elif nextState == "game over page":
         #Game over code
+        exitLoop = False
         stampIDList = []
         if "miscDrawer" not in keywordParameters:
             raise NameError("required parameter 'miscDrawer' was not given")
@@ -385,27 +392,27 @@ def stateController(wn, **keywordParameters):
         miscDrawer.setpos(300, 110)    
         miscDrawer.shape("gameover-text.gif")
         stampIDList.append(miscDrawer.stamp())
-        miscDrawer.write("          ") # puts nothing; must be here for above gameover text to display properly. Weird
-        #miscDrawer.write("GAME OVER", True, align="center", font=("Arial", 48, "bold"))
 
         # Retry and Main Menu buttons
-        miscDrawer.setpos(300, 215)
-        miscDrawer.shape("gameover-button-retry.gif")
-        stampIDList.append(miscDrawer.stamp())
-        miscDrawer.write("          ")
-    
-        miscDrawer.setpos(300, 290) 
-        miscDrawer.shape("gameover-button-menu.gif")
-        stampIDList.append(miscDrawer.stamp())
-        miscDrawer.write("          ")
-    
+        gameoverPageButtons = [
+        Button(195,196,405,234,"gameover-button-retry.gif","gameover-button-retry-hover.gif"),
+        Button(195,271,405,309,"gameover-button-menu.gif","gameover-button-menu-hover.gif")
+        ]
 
-        # when you need to clear the gameover message:
-        #miscDrawer.clearstamp(stampIDList[-1])
+        for button in gameoverPageButtons:
+            button.enable(miscDrawer)
+
+        wn.update()
+    
         print("Your Caterpillar is Dead! :(") # gameover message
     
         # play wah-wah-wahhhh gameover sound
         # 2 options: with simpleaudio (& numpy) OR with winsound
+        
+        #temporary
+        import numpy as np
+        numpyInstalled = True
+
         if numpyInstalled: 
             # calculate note frequencies
             A_freq = 440
@@ -443,6 +450,38 @@ def stateController(wn, **keywordParameters):
             winsound.Beep(494, 700)
             winsound.Beep(466, 1500)'''
         """
+
+        # stay at gameover page until some button is clicked    
+        while exitLoop == False: 
+            #To avoid too much resource usage in checking the buttons;
+            #Could rewrite this to be a time.perf_counter() subtraction loop
+            #ORR...it might not be needed with the global mouseMoved variable
+            time.sleep(0.02)
+            wn.update()  # statement needed in order to listen to key presses
+
+            if mouseMoved:
+                for button in gameoverPageButtons:
+                    if(button.hover == False and button.mouseCoordsOnButton(mouseX,mouseY)):
+                        button.changeToHover(miscDrawer)
+                    elif(button.hover == True and not button.mouseCoordsOnButton(mouseX,mouseY)):
+                        button.changeToOrig(miscDrawer)
+                wn.update()
+                mouseMoved = False
+
+            if mouseClicked:
+                """There might be a better way to do this"""
+                if gameoverPageButtons[0].mouseCoordsOnButton(mouseX,mouseY):
+                    # 'Retry' button clicked
+                    pass
+                elif gameoverPageButtons[1].mouseCoordsOnButton(mouseX,mouseY):
+                    # 'Menu' button clicked
+                    exitLoop = True
+                mouseClicked = False
+        
+        #Clearing the gameover screen
+        for stamp in stampIDList:
+            miscDrawer.clearstamp(stamp)
+        wn.update()
 
         return True  #to exit the loop
 
@@ -514,6 +553,7 @@ def oneGame():
     while(exitGame == False):
         exitGame = stateController(wn, miscDrawer=miscDrawer, playerOneCaterpillar=playerOneCaterpillar)
 
+    wn.mainloop()
     return True #i.e. exitProgram = True
 
 
@@ -522,5 +562,4 @@ if __name__ == "__main__":
     while (exitProgram != True):
         exitProgram = oneGame()
     time.sleep(2)
-    #wn.mainloop()
     #wn.bye() #Closes turtle window

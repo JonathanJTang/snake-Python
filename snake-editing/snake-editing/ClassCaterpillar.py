@@ -32,20 +32,23 @@ class Button:
     #all methods related to one button.
     #It's assumed that the turtleObj will be penup
 
-    def __init__(self, topLeftX, topLeftY, bottomRightX, bottomRightY, origImageStr, hoverImageStr, turtleObj):
-        """Initialize button object by saving required variables and
-            displaying the original state of the button"""
+    def __init__(self, topLeftX, topLeftY, bottomRightX, bottomRightY, origImageStr, hoverImageStr):
+        """Initialize button object by saving required variables.
+            Note: the button is not displayed in this method;
+            that only occurs after a call to self.enable()"""
         #Note: topLeft and bottomRight coordinates are turtle coordinates
         self.topLeftX = topLeftX
         self.topLeftY = topLeftY
         self.bottomRightX = bottomRightX
         self.bottomRightY = bottomRightY
         self.posTuple = ((topLeftX+bottomRightX)//2, (topLeftY+bottomRightY)//2 + 2)
+        print(self.posTuple) #debug
         self.origImageStr = origImageStr
         self.hoverImageStr = hoverImageStr
         self.hover = False
         self.currentStamp = False
 
+    def enable(self, turtleObj):
         #Display button
         self.changeToOrig(turtleObj)
 
@@ -218,7 +221,8 @@ class Caterpillar:
         self.obstaclePositionTuples = obstaclePositionTuples
 
     def beginGame(self):
-        """Method called when starting a new game"""
+        """Method called when starting a new game:
+            initialize/reset some variables, display caterpillar on screen"""
         self.currentHeadDirection = "left"
         self.lastHeadDirection = "left"
         self.currentHeadDirectionSet = False
