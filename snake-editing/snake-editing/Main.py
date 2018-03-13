@@ -201,29 +201,34 @@ def initGraphics(screenWidth, screenHeight):
     "apple-2-40px.gif", # Bonus object - alternative apple (not good cuz it has white background)
     "apple-flash.gif",
     "welcome-background.gif", #  welcome screen leaf background + "caterpilar" text
-    "welcome-button-instructions.gif",
+    "welcome-button-instructions.gif",  # Instructions
     "welcome-button-instructions-hover.gif",
-    "welcome-button-settings.gif",
+    "welcome-button-settings.gif",      # Settings
     "welcome-button-settings-hover.gif",
-    "welcome-button-start.gif",
+    "welcome-button-start.gif",         # Start Game
     "welcome-button-start-hover.gif",
     "welcome-caterpillar-whole.gif", # caterpillar graphics on the left of welcome screen
 
-    "gameover-button-menu.gif",
+    "gameover-button-menu.gif",     #Main Menu
     "gameover-button-menu-hover.gif",
-    "gameover-button-retry.gif",
+    "gameover-button-retry.gif",    #Retry
     "gameover-button-retry-hover.gif",
-    "gameover-text.gif",
-    "gamepaused-3.gif",
-    "gamepaused-2.gif",
-    "gamepaused-1.gif",
-    "gamepaused-text.gif",
+    "gameover-button-exit.gif",     #Exit game
+    "gameover-button-exit-hover.gif",
+    "gameover-button-quit.gif",     #Quit game (alternative)
+    "gameover-button-quit-hover.gif",
+    "gameover-text.gif", # Red text that says "GAME OVER"
+    "gamepaused-3.gif",  # orange 3
+    "gamepaused-2.gif",  # orange 2
+    "gamepaused-1.gif",  # orange 1
+    "gamepaused-text.gif", # orange text that says "GAME PAUSED"
 
 
-    # ^^^ ADD NEW IMAGE HERE
+    # ^^^ ADD NEW IMAGES HERE
     
     "leaf-green-40px.gif" # Bonus object - green leaf (from Khan Academy)
     ]
+    # Register all images in shapes[]
     for imageName in shapes:
         wn.register_shape(imageName)
 
@@ -393,11 +398,15 @@ def stateController(wn, **keywordParameters):
         miscDrawer.shape("gameover-text.gif")
         stampIDList.append(miscDrawer.stamp())
 
-        # Retry and Main Menu buttons
+        # Retry, Main Menu, and Quit Game buttons
+        buttonGroupY = 190 # y-value of the topmost button.Used to adjust buttons as a whole
+        spacing = 60 # number of pixels between the top of one button and the top of the second button
+
         gameoverPageButtons = [
-        Button(195,196,405,234,"gameover-button-retry.gif","gameover-button-retry-hover.gif"),
-        Button(195,271,405,309,"gameover-button-menu.gif","gameover-button-menu-hover.gif")
-        ]
+        Button(195,buttonGroupY,405,buttonGroupY+38,"gameover-button-retry.gif","gameover-button-retry-hover.gif"),
+        Button(195,buttonGroupY+spacing,405,buttonGroupY+spacing+38,"gameover-button-menu.gif","gameover-button-menu-hover.gif"),
+        Button(195,buttonGroupY+spacing*2,405,buttonGroupY+spacing*2+38,"gameover-button-quit.gif","gameover-button-quit-hover.gif")
+        ] # 38 is the number of pixels high
 
         for button in gameoverPageButtons:
             button.enable(miscDrawer)
